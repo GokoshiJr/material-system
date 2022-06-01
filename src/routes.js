@@ -10,28 +10,56 @@ import NotFound from './pages/Page404';
 import Register from './pages/Register';
 import Products from './pages/Products';
 import DashboardApp from './pages/DashboardApp';
-
+// 
+import RequireAuth from './context/RequireAuth';
+import IsLogged from './context/IsLogged';
 // ----------------------------------------------------------------------
 
 export default function Router() {
   return useRoutes([
     {
       path: '/dashboard',
-      element: <DashboardLayout />,
+      element: 
+        <RequireAuth>
+          <DashboardLayout />
+        </RequireAuth>,
       children: [
-        { path: 'app', element: <DashboardApp /> },
-        { path: 'user', element: <User /> },
-        { path: 'products', element: <Products /> },
-        { path: 'blog', element: <Blog /> },
+        { path: 'app', element: 
+          <RequireAuth>
+            <DashboardApp /> 
+          </RequireAuth>
+        },
+        { path: 'user', element: 
+          <RequireAuth>
+            <User />
+          </RequireAuth>
+        },
+        { path: 'products', element: 
+          <RequireAuth>
+            <Products /> 
+          </RequireAuth>
+        },
+        { path: 'blog', element: 
+          <RequireAuth>
+            <Blog /> 
+          </RequireAuth>
+        },
       ],
     },
     {
       path: '/',
       element: <LogoOnlyLayout />,
       children: [
-        { path: '/', element: <Navigate to="/dashboard/app" /> },
-        { path: 'login', element: <Login /> },
-        { path: 'register', element: <Register /> },
+        { path: '/', element: <Navigate to="/dashboard" /> },
+        { path: 'login', element: 
+          <IsLogged>
+            <Login />
+          </IsLogged> 
+        },
+        { path: 'register', element: 
+          <IsLogged>
+            <Register />
+          </IsLogged> },
         { path: '404', element: <NotFound /> },
         { path: '*', element: <Navigate to="/404" /> },
       ],
