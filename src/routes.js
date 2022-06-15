@@ -3,6 +3,7 @@ import { Navigate, useRoutes } from 'react-router-dom';
 import DashboardLayout from './layouts/dashboard';
 import LogoOnlyLayout from './layouts/LogoOnlyLayout';
 //
+import Profile from './pages/Profile';
 import Blog from './pages/Blog';
 import User from './pages/User';
 import Login from './pages/Login';
@@ -24,26 +25,11 @@ export default function Router() {
           <DashboardLayout />
         </RequireAuth>,
       children: [
-        { path: 'app', element: 
-          <RequireAuth>
-            <DashboardApp /> 
-          </RequireAuth>
-        },
-        { path: 'user', element: 
-          <RequireAuth>
-            <User />
-          </RequireAuth>
-        },
-        { path: 'products', element: 
-          <RequireAuth>
-            <Products /> 
-          </RequireAuth>
-        },
-        { path: 'blog', element: 
-          <RequireAuth>
-            <Blog /> 
-          </RequireAuth>
-        },
+        { path: 'app', element: <DashboardApp /> },
+        { path: 'user', element: <User /> },
+        { path: 'products', element: <Products /> },
+        { path: 'blog', element: <Blog /> },
+        { path: 'profile', element: <Profile /> },
       ],
     },
     {
