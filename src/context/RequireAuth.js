@@ -23,27 +23,24 @@ export default function RequireAuth({ children }) {
     console.log(data.user)  
   }
 
-  if (!auth.loggedUser) {
+  if (!auth.loggedUser && auth.token) {
     getUser()
   }
 
-  // se ejecuta al recargar la pag
-  React.useEffect(() => {
-    axios({
-      headers: {"x-access-token": auth.token},
-      url: `${API_URL}/auth/isLogged`,
-      method: 'POST'
-    })
-    .then((res)=>{   
-      console.log(res)
-      console.log('todo bien');
-    })
-    .catch((err) => {
-      console.log(err)
-      console.log('Log out')
-      auth.signout()
-    })
-  }, []);
+  // se ejecuta al recargar la pag / renderizar el provider
+  axios({
+    headers: {"x-access-token": auth.token},
+    url: `${API_URL}/auth/isLogged`,
+    method: 'POST'
+  })
+  .then((res)=>{
+    console.log(`isLogged: ${res.statusText}`);
+  })
+  .catch((err) => {
+    console.log(err)
+    console.log('Log out')
+    auth.signout()
+  })  
 
   if (!auth.token) {    
     return <Navigate to="/login" state={{ from: location }} replace />
