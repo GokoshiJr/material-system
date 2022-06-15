@@ -1,6 +1,6 @@
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 // material
 import {
@@ -27,7 +27,8 @@ import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashboard/user';
 // mock
 import USERLIST from '../_mock/user';
-
+import { getUsers } from '../utils/api';
+import { AppContext } from '../context/AppContext' 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -71,6 +72,15 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function User() {
+  // const auth = useContext(AppContext)
+
+  /* const _getUsers = async () => {
+    const { data } = await getUsers(auth.token)
+    console.log(data)  
+  } */
+
+  // _getUsers()
+
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
