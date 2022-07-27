@@ -56,17 +56,19 @@ const ContentStyle = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function Login() {
-  const smUp = useResponsive('up', 'sm');
+  // const smUp = useResponsive('up', 'sm');
 
   const mdUp = useResponsive('up', 'md');
 
   return (
     <Page title="Login">
       <RootStyle>
-        <HeaderStyle>
-          <Logo />
 
-          {smUp && (
+        <HeaderStyle>
+          {mdUp && (
+            <Logo />
+          )}
+          {mdUp && (
             <Typography variant="body2" sx={{ mt: { md: -2 } }}>
               Don’t have an account? {''}
               <Link variant="subtitle2" component={RouterLink} to="/register">
@@ -87,15 +89,18 @@ export default function Login() {
 
         <Container maxWidth="sm">
           <ContentStyle>
+
             <Typography variant="h4" gutterBottom>
-              Sign in to Minimal
+              Sign in to Iventium
             </Typography>
 
-            <Typography sx={{ color: 'text.secondary', mb: 5 }}>Enter your details below.</Typography>          
+            <Typography sx={{ color: 'text.secondary', mb: 5 }}>
+              Enter your details below.
+            </Typography>
 
             <LoginForm />
 
-            {!smUp && (
+            {(!mdUp) && (
               <Typography variant="body2" align="center" sx={{ mt: 3 }}>
                 Don’t have an account?{' '}
                 <Link variant="subtitle2" component={RouterLink} to="/register">
@@ -103,6 +108,7 @@ export default function Login() {
                 </Link>
               </Typography>
             )}
+
           </ContentStyle>
         </Container>
       </RootStyle>
