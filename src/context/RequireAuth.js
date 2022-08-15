@@ -8,19 +8,18 @@ import { getMe } from '../utils/api';
 const API_URL = process.env.REACT_APP_API_URL;
 
 RequireAuth.propTypes = {
-  children: PropTypes.element 
+  children: PropTypes.element
 }
 
 export default function RequireAuth({ children }) {
-  
+
   const auth = React.useContext(AppContext);
   const location = useLocation();
-  
+
   const getUser = async () => {
     const { data } = await getMe(auth.token)
     auth.setLoggedUser(data.user)
-    console.log(auth.token)
-    console.log(data.user)  
+    auth.setLoggedEmployee(data.employee)
   }
 
   if (!auth.loggedUser && auth.token) {
@@ -40,11 +39,11 @@ export default function RequireAuth({ children }) {
     console.log(err)
     console.log('Log out')
     auth.signout()
-  })  
+  })
 
-  if (!auth.token) {    
+  if (!auth.token) {
     return <Navigate to="/login" state={{ from: location }} replace />
   }
 
-  return children;  
+  return children;
 }

@@ -9,7 +9,7 @@ import MenuPopover from '../../components/MenuPopover';
 import account from '../../_mock/account';
 // context
 import { AppContext } from '../../context/AppContext'
-import { getMe } from '../../utils/api';
+
 // ----------------------------------------------------------------------
 
 const MENU_OPTIONS = [
@@ -50,18 +50,6 @@ export default function AccountPopover() {
     window.localStorage.setItem("token", "");
     return <Navigate to="/login" replace />
   }
-
-  const getUser = async () => {
-    const { data } = await getMe(auth.token)
-    auth.setLoggedUser(data.user)
-    console.log(auth.token)
-    console.log(data.user)
-  }
-
-  if (!auth.loggedUser) {
-    getUser()
-  }
-  
 
   return (
     <>

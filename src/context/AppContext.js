@@ -4,13 +4,14 @@ import PropTypes from 'prop-types';
 const AppContext = React.createContext(null);
 
 AppProvider.propTypes = {
-  children: PropTypes.element 
+  children: PropTypes.element
 }
 
 function AppProvider({ children }) {
 
   const [token, setToken] = React.useState(window.localStorage.getItem('token'));
-  const [loggedUser, setLoggedUser] = React.useState(null);  
+  const [loggedUser, setLoggedUser] = React.useState(null);
+  const [loggedEmployee, setLoggedEmployee] = React.useState(null);
   const [isAdmin, setIsAdmin] = React.useState(false);
   const [products, setProducts] = React.useState(null);
 
@@ -19,16 +20,18 @@ function AppProvider({ children }) {
     setToken("");
   }
 
-  const value = { 
-    token, 
-    setToken, 
+  const value = {
+    token,
+    setToken,
     loggedUser,
-    setLoggedUser, 
+    setLoggedUser,
     isAdmin,
-    setIsAdmin, 
+    setIsAdmin,
     products,
-    setProducts, 
-    signout 
+    setProducts,
+    signout,
+    loggedEmployee,
+    setLoggedEmployee
   }
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

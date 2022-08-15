@@ -18,55 +18,73 @@ export default function ProfileForm({
 }) {
 
   const auth = useContext(AppContext)
-  const { loggedUser, setLoggedUser } = auth
+  const {
+    loggedEmployee,
+    setLoggedEmployee,
+    loggedUser
+  } = auth
+
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
   const RegisterSchema = Yup.object().shape({
-    username: 
-      Yup.string() 
-      .min(2, 'Too Short!').max(50, 'Too Long!')
-      .required('First name required'),  
-    email: 
+    email: Yup.string()
+    .email('Email must be a valid email address')
+    .required('Email is required'),
+    name:
       Yup.string()
-      .email('Email must be a valid email address')
-      .required('Email is required'),
-    social_id: Yup.number().required('Social ID is required'),
-    phone_number: Yup.string().required('Phone number is required'),
-    direction: Yup.string().required('Direction is required'),
+      .min(2, 'Too Short!').max(50, 'Too Long!')
+      .required('First name required'),
+    lastName:
+      Yup.string()
+      .min(2, 'Too Short!').max(50, 'Too Long!')
+      .required('First name required'),
+    socialId: Yup.number().required('Social ID is required'),
+    phoneNumber: Yup.string().required('Phone number is required'),
     password: Yup.string().min(8, 'Minimal eight characters').required('Password is required')
   });
 
   const formik = useFormik({
     initialValues: {
-      _id: '',
-      username: 'Loading...',
       email: 'Loading...',
-      social_id: 'Loading...',
-      phone_number: 'Loading...',
-      direction: 'Loading...',
-      password: '' 
+      name: 'Loading...',
+      lastName: 'Loading...',
+      phoneNumber: 'Loading...',
+      socialId: 'Loading...',
+      password: ''
     },
     validationSchema: RegisterSchema,
     onSubmit: () => {}
   });
 
-  const { 
-    errors, 
+  const {
+    errors,
     touched,
-    isSubmitting, 
-    getFieldProps, 
-    setValues, 
-    values 
+    isSubmitting,
+    getFieldProps,
+    setValues,
+    values
   } = formik;
 
   const handleChange = (event) => {
     const { name, value } = event.target
     setValues({...formik.values, [name]: value});
   }
-  
+
   useEffect(() => {
-    if (loggedUser) {
+    if (loggedEmployee) {
+      setValues({
+        email: loggedUser.email,
+        name: loggedEmployee[0].name,
+        lastName: loggedEmployee[0].lastName,
+        phoneNumber: loggedEmployee[0].phoneNumber,
+        socialId: loggedEmployee[0].socialId
+      })
+    }
+  }, [loggedEmployee])
+
+  /* useEffect(() => {
+    if (loggedEmployee && !isUpdateMode) {
       setValues({
         _id: loggedUser._id,
         username: loggedUser.username,
@@ -77,69 +95,28 @@ export default function ProfileForm({
         password: ''
       })
     }
-  }, [loggedUser])
+  }, [isUpdateMode]) */
 
-  useEffect(() => {
-    if (loggedUser && !isUpdateMode) {
-      setValues({
-        _id: loggedUser._id,
-        username: loggedUser.username,
-        email: loggedUser.email,
-        social_id: loggedUser.social_id,
-        phone_number: loggedUser.phone_number,
-        direction: loggedUser.direction,
-        password: ''
-      })
-    }
-  }, [isUpdateMode])
-
-  const _updateLoggedUser = async (values) => {
+  /* const _updateLoggedUser = async (values) => {
     const {data} = await updateLoggedUser(auth.token, values)
     console.log(data.user)
     setLoggedUser(data.user)
     setIsUpdateMode(false)
-  }
+  } */
 
-  const handleSubmit = (event) => {
+  /* const handleSubmit = (event) => {
     event.preventDefault();
     // console.log(values)
     _updateLoggedUser(values)
-    
+
     // auth.setLoggedUser(user)
-  }
+  } */
 
   return (
     <FormikProvider value={formik}>
-      <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
+      <Form autoComplete="off" noValidate>
+
         <Stack spacing={3}>
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>            
-            <TextField
-              fullWidth
-              name='username'
-              label='UserName'
-              {...getFieldProps('username')}
-              onChange={handleChange}
-              error={Boolean(touched.username && errors.username)}
-              helperText={touched.username && errors.username}
-              InputProps={{
-                readOnly: !isUpdateMode,
-              }}
-            />
-
-            <TextField
-              fullWidth
-              name='social_id'
-              label="Social ID"
-              {...getFieldProps('social_id')}
-              onChange={handleChange}
-              error={Boolean(touched.social_id && errors.social_id)}
-              helperText={touched.social_id && errors.social_id}
-              InputProps={{
-                readOnly: !isUpdateMode,
-              }}
-            />            
-          </Stack>
-
           <TextField
             fullWidth
             name='email'
@@ -152,15 +129,42 @@ export default function ProfileForm({
               readOnly: true,
             }}
           />
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+            <TextField
+              fullWidth
+              name='name'
+              label='Name'
+              {...getFieldProps('name')}
+              onChange={handleChange}
+              error={Boolean(touched.name && errors.name)}
+              helperText={touched.name && errors.name}
+              InputProps={{
+                readOnly: !isUpdateMode,
+              }}
+            />
+
+            <TextField
+              fullWidth
+              name='lastName'
+              label="Last Name"
+              {...getFieldProps('lastName')}
+              onChange={handleChange}
+              error={Boolean(touched.lastName && errors.lastName)}
+              helperText={touched.lastName && errors.lastName}
+              InputProps={{
+                readOnly: !isUpdateMode,
+              }}
+            />
+          </Stack>
 
           <TextField
             fullWidth
-            name='phone_number'
+            name='phoneNumber'
             label='Phone Number'
-            {...getFieldProps('phone_number')}
+            {...getFieldProps('phoneNumber')}
             onChange={handleChange}
-            error={Boolean(touched.phone_number && errors.phone_number)}
-            helperText={touched.phone_number && errors.phone_number}
+            error={Boolean(touched.phoneNumber && errors.phoneNumber)}
+            helperText={touched.phoneNumber && errors.phoneNumber}
             InputProps={{
               readOnly: !isUpdateMode,
             }}
@@ -168,16 +172,17 @@ export default function ProfileForm({
 
           <TextField
             fullWidth
-            name='direction'
-            label='Direction'
-            {...getFieldProps('direction')}
+            name='socialId'
+            label='Social Id'
+            {...getFieldProps('socialId')}
             onChange={handleChange}
-            error={Boolean(touched.direction && errors.direction)}
-            helperText={touched.direction && errors.direction}
+            error={Boolean(touched.socialId && errors.socialId)}
+            helperText={touched.socialId && errors.socialId}
             InputProps={{
               readOnly: !isUpdateMode,
             }}
           />
+
           {
             isUpdateMode
             ?
@@ -189,11 +194,11 @@ export default function ProfileForm({
                 {...getFieldProps('password')}
                 onChange={handleChange}
                 error={Boolean(touched.password && errors.password)}
-                helperText={touched.password && errors.password}                
-              /> 
-              <LoadingButton 
+                helperText={touched.password && errors.password}
+              />
+              <LoadingButton
                 fullWidth size="large"
-                type="submit" 
+                type="submit"
                 variant="contained"
               >
                 Save
@@ -201,7 +206,7 @@ export default function ProfileForm({
             </>
             : ''
           }
-          
+
         </Stack>
       </Form>
     </FormikProvider>
