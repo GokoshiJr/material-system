@@ -48,7 +48,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const { pathname } = useLocation();
 
   const isDesktop = useResponsive('up', 'lg');
-  
+
   useEffect(() => {
     if (isOpenSidebar) {
       onCloseSidebar();
@@ -72,13 +72,14 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
           <AccountStyle>
             <Avatar src={account.photoURL} alt="photoURL" />
             <Box sx={{ ml: 2 }}>
-              <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
+              <Typography variant="subtitle2" sx={{ color: 'text.primary' }} noWrap>
                 {auth.loggedUser
                   ? auth.loggedUser.email
                   : "cargando..."
-                } 
+                }
               </Typography>
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+
+              <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
                 {auth.loggedUser
                   ? auth.loggedUser.roles.map(rol => <li key={rol.name}>{rol.name}</li>)
                   : "cargando..."

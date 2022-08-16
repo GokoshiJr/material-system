@@ -19,9 +19,9 @@ const MENU_OPTIONS = [
     linkTo: '/',
   },
   {
-    label: 'Profile',
+    label: 'Mi Perfil',
     icon: 'eva:person-fill',
-    linkTo: '#',
+    linkTo: '/dashboard/profile',
   },
   {
     label: 'Settings',
@@ -89,15 +89,9 @@ export default function AccountPopover() {
         }}
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
-          <Typography variant="subtitle2" noWrap>
-            {auth.loggedUser
-              ? auth.loggedUser.username
-              : "cargando..."
-            }
-          </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {auth.loggedUser
-              ? auth.loggedUser.email
+            {auth.loggedEmployee
+              ? auth.loggedEmployee.name
               : "cargando..."
             }
           </Typography>
@@ -116,7 +110,7 @@ export default function AccountPopover() {
         <Divider sx={{ borderStyle: 'dashed' }} />
 
         <MenuItem onClick={handleSignOut} sx={{ m: 1 }}>
-          Logout
+          Cerrar Sesión
         </MenuItem>
       </MenuPopover>
     </>

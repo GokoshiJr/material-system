@@ -17,13 +17,13 @@ export default function RequireAuth({ children }) {
   const location = useLocation();
 
   const getUser = async () => {
-    const { data } = await getMe(auth.token)
-    auth.setLoggedUser(data.user)
-    auth.setLoggedEmployee(data.employee)
+    const { data } = await getMe(auth.token);
+    auth.setLoggedUser(data.user);
+    auth.setLoggedEmployee(data.employee);
   }
 
   if (!auth.loggedUser && auth.token) {
-    getUser()
+    getUser();
   }
 
   // se ejecuta al recargar la pag / renderizar el provider
