@@ -19,6 +19,7 @@ export default function RequireAuth({ children }) {
   const getUser = async () => {
     const { data } = await getMe(auth.token);
     auth.setLoggedUser(data.user);
+    data.employee.userId = data.employee.userId.email;
     auth.setLoggedEmployee(data.employee);
   }
 
