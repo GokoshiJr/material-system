@@ -1,7 +1,6 @@
 import { filter } from 'lodash';
-import { sentenceCase } from 'change-case';
-import { useState, useContext } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { useState, useContext, useEffect } from 'react';
+import { Link as RouterLink, useParams } from 'react-router-dom';
 // material
 import {
   Card,
@@ -19,6 +18,7 @@ import {
   TablePagination,
 } from '@mui/material';
 // components
+import EditUser from './EditUser';
 import Page from '../components/Page';
 import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
@@ -26,17 +26,20 @@ import Iconify from '../components/Iconify';
 import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashboard/user';
 // mock
-import USERLIST from '../_mock/user';
-import { getUsers } from '../utils/api';
-import { AppContext } from '../context/AppContext' 
+// import USERLIST from '../_mock/user';
+// context
+import { AppContext } from '../context/AppContext'
+// api method
+import { getEmployees, showEmployee } from '../utils/api'
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Name', alignRight: false },
-  { id: 'company', label: 'Company', alignRight: false },
-  { id: 'role', label: 'Role', alignRight: false },
-  { id: 'isVerified', label: 'Verified', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false },
+  { id: 'name', label: 'Nombre', alignRight: false },
+  { id: 'lastName', label: 'Apellido', alignRight: false },
+  { id: 'socialId', label: 'Cedula', alignRight: false },
+  { id: 'phoneNumber', label: 'Telefono', alignRight: false },
+  { id: 'userId._id', label: 'Rol', alignRight: false },
+  { id: 'accessState', label: 'Estatus', alignRight: false },
   { id: '' },
 ];
 
@@ -72,14 +75,22 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function User() {
-  // const auth = useContext(AppContext)
 
-  /* const _getUsers = async () => {
-    const { data } = await getUsers(auth.token)
-    console.log(data)  
-  } */
+  const auth = useContext(AppContext);
 
-  // _getUsers()
+  const { id } = useParams();
+
+  const [employee, setEmployee] = useState({
+    email: 'cargando...',
+    name: 'cargando...',
+    lastName: 'cargando...',
+    phoneNumber: 'cargando...',
+    socialId: 'cargando...',
+    birthDate:  'cargando...',
+    userId: 'cargando...'
+  })
+
+  const [USERLIST, setUSERLIST] = useState([{_id: 1, name: 'epa Alex'}])
 
   const [page, setPage] = useState(0);
 
@@ -92,6 +103,23 @@ export default function User() {
   const [filterName, setFilterName] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const getEmp = async () => {
+    const { data } = await getEmployees(auth.token);
+    setUSERLIST(data);
+  }
+
+  const showEmp = async () => {
+    const { data } = await showEmployee(auth.token, id);
+    data.userId = data.userId.email;
+    setEmployee(data);
+  }
+
+  useEffect(() => {
+    if (id && id !== "add") showEmp();
+    if (!id) getEmp();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id])
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -142,104 +170,138 @@ export default function User() {
 
   const isUserNotFound = filteredUsers.length === 0;
 
-  return (
-    <Page title="User">
-      <Container>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom>
-            User
-          </Typography>
-          <Button variant="contained" component={RouterLink} to="#" startIcon={<Iconify icon="eva:plus-fill" />}>
-            New User
-          </Button>
-        </Stack>
+  // tabla de empleados
+  if (!id) {
+    return (
+      <Page title="Empleados">
+        <Container>
+          <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+            <Typography variant="h4" gutterBottom>
+              Lista de Empleados
+            </Typography>
+            <Button variant="contained" component={RouterLink} to="add" startIcon={<Iconify icon="eva:plus-fill" />}>
+              Crear Empleado
+            </Button>
+          </Stack>
 
-        <Card>
-          <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
-
-          <Scrollbar>
-            <TableContainer sx={{ minWidth: 800 }}>
-              <Table>
-                <UserListHead
-                  order={order}
-                  orderBy={orderBy}
-                  headLabel={TABLE_HEAD}
-                  rowCount={USERLIST.length}
-                  numSelected={selected.length}
-                  onRequestSort={handleRequestSort}
-                  onSelectAllClick={handleSelectAllClick}
-                />
-                <TableBody>
-                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, role, status, company, avatarUrl, isVerified } = row;
-                    const isItemSelected = selected.indexOf(name) !== -1;
-
-                    return (
-                      <TableRow
-                        hover
-                        key={id}
-                        tabIndex={-1}
-                        role="checkbox"
-                        selected={isItemSelected}
-                        aria-checked={isItemSelected}
-                      >
-                        <TableCell padding="checkbox">
-                          <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, name)} />
-                        </TableCell>
-                        <TableCell component="th" scope="row" padding="none">
-                          <Stack direction="row" alignItems="center" spacing={2}>
-                            <Avatar alt={name} src={avatarUrl} />
-                            <Typography variant="subtitle2" noWrap>
-                              {name}
-                            </Typography>
-                          </Stack>
-                        </TableCell>
-                        <TableCell align="left">{company}</TableCell>
-                        <TableCell align="left">{role}</TableCell>
-                        <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
-                        <TableCell align="left">
-                          <Label variant="ghost" color={(status === 'banned' && 'error') || 'success'}>
-                            {sentenceCase(status)}
-                          </Label>
-                        </TableCell>
-
-                        <TableCell align="right">
-                          <UserMoreMenu />
+          <Card>
+            <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
+            <Scrollbar>
+              <TableContainer sx={{ minWidth: 800 }}>
+                <Table>
+                  <UserListHead
+                    order={order}
+                    orderBy={orderBy}
+                    headLabel={TABLE_HEAD}
+                    rowCount={USERLIST.length}
+                    numSelected={selected.length}
+                    onRequestSort={handleRequestSort}
+                    onSelectAllClick={handleSelectAllClick}
+                  />
+                  <TableBody>
+                    {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                      const {
+                        _id,
+                        name,
+                        lastName,
+                        socialId,
+                        phoneNumber,
+                        userId,
+                        accessState,
+                        avatarUrl
+                      } = row;
+                      const isItemSelected = selected.indexOf(name) !== -1;
+                      return (
+                        <TableRow
+                          hover
+                          key={_id}
+                          tabIndex={-1}
+                          role="checkbox"
+                          selected={isItemSelected}
+                          aria-checked={isItemSelected}
+                        >
+                          <TableCell padding="checkbox">
+                            <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, name)} />
+                          </TableCell>
+                          <TableCell component="th" scope="row" padding="none">
+                            <Stack direction="row" alignItems="center" spacing={2}>
+                              <Avatar alt={name} src={avatarUrl} />
+                              <Typography variant="subtitle2" noWrap>
+                                {name}
+                              </Typography>
+                            </Stack>
+                          </TableCell>
+                          <TableCell align="left">{lastName}</TableCell>
+                          <TableCell align="left">{socialId}</TableCell>
+                          <TableCell align="left">{phoneNumber}</TableCell>
+                          <TableCell align="left">{userId
+                            ? userId.roles[0].name
+                            : 'cargando...'
+                          }</TableCell>
+                          <TableCell align="left">
+                            <Label variant="ghost" color={accessState ? 'success' : 'error'}>
+                              {accessState ?'Activo' :'Baneado'}
+                            </Label>
+                          </TableCell>
+                          <TableCell align="right">
+                            <UserMoreMenu
+                              employeeId={_id}
+                              getEmployees={getEmployees}
+                              setUSERLIST={setUSERLIST}
+                              accessState={accessState}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                    {emptyRows > 0 && (
+                      <TableRow style={{ height: 53 * emptyRows }}>
+                        <TableCell colSpan={6} />
+                      </TableRow>
+                    )}
+                  </TableBody>
+                  {isUserNotFound && (
+                    <TableBody>
+                      <TableRow>
+                        <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                          <SearchNotFound searchQuery={filterName} />
                         </TableCell>
                       </TableRow>
-                    );
-                  })}
-                  {emptyRows > 0 && (
-                    <TableRow style={{ height: 53 * emptyRows }}>
-                      <TableCell colSpan={6} />
-                    </TableRow>
+                    </TableBody>
                   )}
-                </TableBody>
+                </Table>
+              </TableContainer>
+            </Scrollbar>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={USERLIST.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </Card>
+        </Container>
+      </Page>
+    );
+  }
 
-                {isUserNotFound && (
-                  <TableBody>
-                    <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                        <SearchNotFound searchQuery={filterName} />
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                )}
-              </Table>
-            </TableContainer>
-          </Scrollbar>
+  // crear empleado
+  if (id === "add") {
+    return (
+      <EditUser
+        title={'Crear'}
+      />
+    )
+  }
 
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={USERLIST.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Card>
-      </Container>
-    </Page>
-  );
+  // editar empleado por id
+  return (
+    <EditUser
+      employee={employee}
+      setEmployee={setEmployee}
+      title={'Editar'}
+    />
+  )
 }

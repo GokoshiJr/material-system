@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 // @mui
 import { styled } from '@mui/material/styles';
 import {
@@ -12,6 +12,8 @@ import Page from '../components/Page';
 import ProfileForm from '../sections/@dashboard/profile/ProfileForm';
 // context
 import { AppContext } from '../context/AppContext'
+// api method
+import { showEmployee } from '../utils/api';
 
 // ----------------------------------------------------------------------
 
@@ -33,13 +35,17 @@ const ContentStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function Register() {
-  
-  const auth = useContext(AppContext)
-  const { loggedEmployee } = auth
+export default function Register({
+  employee,
+  setEmployee,
+  title
+}) {
+
+  const [editEmployeeMode, setEditEmployeeMode] = useState(true);
+  const [createEmployee, setCreateEmployee] = useState(true);
 
   return (
-    <Page title="Profile">
+    <Page title="User 2">
       <RootStyle>
         <Container>
           <ContentStyle>
@@ -50,11 +56,14 @@ export default function Register() {
               mb={5}
             >
               <Typography variant="h4" gutterBottom>
-                Perfil del Empleado
+                {title} Empleado
               </Typography>
             </Stack>
             <ProfileForm
-              employee={loggedEmployee}
+              employee={employee}
+              setEmployee={setEmployee}
+              editEmployeeMode={editEmployeeMode}
+              createEmployee={createEmployee}
             />
           </ContentStyle>
         </Container>
