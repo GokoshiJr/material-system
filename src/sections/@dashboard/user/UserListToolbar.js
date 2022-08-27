@@ -33,9 +33,19 @@ UserListToolbar.propTypes = {
   numSelected: PropTypes.number,
   filterName: PropTypes.string,
   onFilterName: PropTypes.func,
+  setFilterName: PropTypes.func,
+  selected: PropTypes.array,
+  eliminateSelected: PropTypes.func
 };
 
-export default function UserListToolbar({ numSelected, filterName, onFilterName }) {
+export default function UserListToolbar({ 
+  numSelected, 
+  filterName, 
+  onFilterName, 
+  setFilterName, 
+  selected,
+  eliminateSelected 
+}) {
   return (
     <RootStyle
       sx={{
@@ -47,9 +57,9 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName 
     >
       {numSelected > 0 ? (
         <Typography component="div" variant="subtitle1">
-          {numSelected} selected
+          {numSelected} seleccionados
         </Typography>
-      ) : (
+      ) : (        
         <SearchStyle
           value={filterName}
           onChange={onFilterName}
@@ -61,20 +71,23 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName 
           }
         />
       )}
-
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
+      
+      {numSelected > 0 && 
+        <Tooltip title="Eliminar registros">
+          <IconButton onClick={eliminateSelected}>
             <Iconify icon="eva:trash-2-fill" />
           </IconButton>
         </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <Iconify icon="ic:round-filter-list" />
+      }
+      
+      {filterName &&
+        <Tooltip title="Limpiar busqueda">
+          <IconButton onClick={() => { setFilterName('') }}>
+            <Iconify icon="eva:close-square-outline" />
           </IconButton>
         </Tooltip>
-      )}
+      }
+
     </RootStyle>
   );
 }

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useRef, useState, useContext } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 // material
@@ -12,17 +13,34 @@ import { AppContext } from '../../../context/AppContext';
 import { eliminateEmployee, updateEmployee } from '../../../utils/api';
 // ----------------------------------------------------------------------
 
+UserMoreMenu.propTypes = {
+  elementId: PropTypes.string,
+  getElements: PropTypes.func,
+  setElements: PropTypes.func,
+  updateElement: PropTypes.func,
+  eliminateElement: PropTypes.func,
+
+  getEmployees: PropTypes.func,
+  setUSERLIST: PropTypes.func,
+  accessState: PropTypes.bool
+};
+
 export default function UserMoreMenu({
-  employeeId,
+  elementId,
+  getElements,
+  setElements,
+  updateElement,
+  eliminateElement,
+
   getEmployees,
   setUSERLIST,
   accessState
 }){
 
   const auth = useContext(AppContext)
-  
+
   const ref = useRef(null);
-  
+
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -40,59 +58,68 @@ export default function UserMoreMenu({
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <MenuItem component={RouterLink} to={`${employeeId}`} sx={{ color: 'text.secondary' }}>
+        <MenuItem component={RouterLink} to={`${elementId}`} sx={{ color: 'text.secondary' }}>
           <ListItemIcon>
             <Iconify icon="eva:edit-fill" width={24} height={24} />
           </ListItemIcon>
           <ListItemText primary="Editar" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
-        <MenuItem 
-          sx={{ color: 'text.secondary' }}
-          onClick={() => {Swal.fire({
-            title: `¿Desea cambiar el acceso de este empleado?`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Confirmar',
-            cancelButtonText: 'Cancelar',
-            background: `rgba(210,210,210,1)`,
-            backdrop: `rgba(0,0,0,0)`
-          }).then(async (result) => {
-            if (result.isConfirmed) {
-              const res = await updateEmployee(
-                auth.token, 
-                employeeId, 
-                { accessState: !accessState }
-              );
-              const { data } = await getEmployees(auth.token);
-              setUSERLIST(data);
+        {accessState !== undefined &&
+          <MenuItem
+            sx={{ color: 'text.secondary' }}
+            onClick={() =>
+            {
               Swal.fire({
-                icon: 'success',
-                title: 'Acceso actualizado con exito',
-                background: `rgba(210,210,210,1)`,
-                backdrop: `rgba(0,0,0,0)`
-              })
-            }
-          }).catch((err) => {
-            Swal.fire({
-              icon: 'error',
-              title: 'Ocurrió un error',
-              text: `Epa Alex`
+              title: `¿Desea cambiar el acceso de este empleado?`,
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Confirmar',
+              cancelButtonText: 'Cancelar',
+              background: `rgba(210,210,210,1)`,
+              backdrop: `rgba(0,0,0,0)`
             })
-            console.log(err)
-          })
-          setIsOpen(false)
-          }}        
-        >
-          <ListItemIcon>
-            <Iconify icon="eva:lock-outline" width={24} height={24} />
-          </ListItemIcon>
-          <ListItemText primary="Acceso" primaryTypographyProps={{ variant: 'body2' }} />
-        </MenuItem>
+            .then(async (result) => {
+              if (result.isConfirmed) {
+                await updateElement(
+                  auth.token,
+                  elementId,
+                  { accessState: !accessState }
+                );
+                const { data } = await getElements(auth.token);
+                setElements(data);
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Acceso actualizado con exito',
+                  background: `rgba(210,210,210,1)`,
+                  backdrop: `rgba(0,0,0,0)`
+                })
+              }
+            })
+            .catch((err) => {
+              Swal.fire({
+                icon: 'error',
+                title: 'Ocurrió un error',
+                text: `Epa Alex`
+              })
+              console.log(err)
+            })
+            setIsOpen(false)
+            }}
+          >
+
+            <ListItemIcon>
+              <Iconify icon="eva:lock-outline" width={24} height={24} />
+            </ListItemIcon>
+            <ListItemText primary="Acceso" primaryTypographyProps={{ variant: 'body2' }} />
+          </MenuItem>
+        }
         <MenuItem
           sx={{ color: 'text.secondary' }}
-          onClick={() => {Swal.fire({
+          onClick={() =>
+          {
+            Swal.fire({
             title: `¿Desea eliminar este empleado?`,
             icon: 'warning',
             showCancelButton: true,
@@ -102,11 +129,12 @@ export default function UserMoreMenu({
             cancelButtonText: 'Cancelar',
             background: `rgba(210,210,210,1)`,
             backdrop: `rgba(0,0,0,0)`
-          }).then(async (result) => {
+          })
+          .then(async (result) => {
             if (result.isConfirmed) {
-              const res = await eliminateEmployee(auth.token, employeeId);
-              const { data } = await getEmployees(auth.token);
-              setUSERLIST(data);
+              await eliminateElement(auth.token, elementId);
+              const { data } = await getElements(auth.token);
+              setElements(data);
               Swal.fire({
                 icon: 'success',
                 title: 'Empleado eliminado con exito',
@@ -133,7 +161,7 @@ export default function UserMoreMenu({
             primaryTypographyProps={{ variant: 'body2' }}
           />
         </MenuItem>
-        
+
       </Menu>
     </>
   );
