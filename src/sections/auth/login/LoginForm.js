@@ -40,18 +40,18 @@ export default function LoginForm() {
       login();
     },
   });
-  
-  const { 
-    setErrors, 
-    errors, 
-    touched, 
-    values, 
-    isSubmitting, 
-    setSubmitting, 
-    handleSubmit, 
-    getFieldProps 
-  } = formik;  
-  
+
+  const {
+    setErrors,
+    errors,
+    touched,
+    values,
+    isSubmitting,
+    setSubmitting,
+    handleSubmit,
+    getFieldProps
+  } = formik;
+
   const login = () => {
     // form values
     const { email, password } = values
@@ -70,11 +70,8 @@ export default function LoginForm() {
         title: 'Error',
         text
       });
-      if (type === 'email') {
-        setErrors({ email: text });
-      } else {
-        setErrors({ password: text });
-      }
+      if (type === 'email') setErrors({ email: text })
+      if (type === 'password') setErrors({ password: text })
     })
   }
 

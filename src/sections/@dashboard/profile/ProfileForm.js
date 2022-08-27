@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useFormik, Form, FormikProvider } from 'formik';
@@ -12,6 +13,12 @@ import { AppContext } from '../../../context/AppContext';
 import { updateEmployee, showEmployee, createEmployee } from '../../../utils/api';
 
 // ----------------------------------------------------------------------
+
+ProfileForm.propTypes = {
+  employee: PropTypes.object,
+  editEmployeeMode: PropTypes.bool,
+  setEmployee: PropTypes.func
+};
 
 export default function ProfileForm({
   employee,
@@ -62,10 +69,8 @@ export default function ProfileForm({
     setValues,
     errors,
     touched,
-    setErrors,
     resetForm
   } = formik;
-
 
   const showEmp = async () => {
     const { data } = await showEmployee(auth.token, id)
@@ -87,14 +92,14 @@ export default function ProfileForm({
   }
 
   const handleResetValues = () => {
-    // const birthDate = new Date(employee.birthDate);
+    const birthDate = new Date();
     setValues({
       email: employee.userId,
       name: employee.name,
       lastName: employee.lastName,
       phoneNumber: employee.phoneNumber,
       socialId: employee.socialId,
-      birthDate: employee.birthDate /* birthDate.toLocaleDateString() */
+      birthDate /*: employee.birthDate birthDate.toLocaleDateString() */
     })
     setShowUpdateButton(false)
   }
@@ -102,10 +107,8 @@ export default function ProfileForm({
   const handleChange = (event) => {
     const { name, value } = event.target;
     setValues({...formik.values, [name]: value});
-
     if (employee) setShowUpdateButton(true);
     if (!employee) setShowCreateButton(true);
-    console.log('handleChange')
   }
 
   /* create employee */
@@ -162,7 +165,7 @@ export default function ProfileForm({
         birthDate: ''
       })
     }
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [employee, setValues])
 
 
