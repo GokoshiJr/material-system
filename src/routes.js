@@ -1,9 +1,9 @@
-import { Navigate, useRoutes, Outlet } from 'react-router-dom';
-
+import { Navigate, useRoutes } from 'react-router-dom';
 // layouts
 import DashboardLayout from './layouts/dashboard';
 import LogoOnlyLayout from './layouts/LogoOnlyLayout';
 //
+import Client from './pages/Client';
 import Profile from './pages/Profile';
 import Blog from './pages/Blog';
 import User from './pages/User';
@@ -13,34 +13,32 @@ import Register from './pages/Register';
 import Products from './pages/Products';
 import DashboardApp from './pages/DashboardApp';
 import EditUser from './pages/EditUser';
-// 
+import EditClient from './pages/EditClient';
+//
 import RequireAuth from './context/RequireAuth';
 import IsLogged from './context/IsLogged';
 
 // ----------------------------------------------------------------------
 
 export default function Router() {
-  return useRoutes([    
+  return useRoutes([
     {
       path: '/dashboard',
-      element: 
+      element:
         <RequireAuth>
           <DashboardLayout />
         </RequireAuth>,
       children: [
         { path: 'app', element: <DashboardApp /> },
-        { 
-          path: 'user', 
-          element: 
-          <>
-            <User />            
-          </>,
-          children: [{
-            path: ':id',
-            element: <EditUser />
-          }]
+        {
+          path: 'user', element: <User />,
+          children: [{ path: ':id', element: <EditUser /> }]
         },
-        
+        { path: 'campaign', element: <Client /> },
+        {
+          path: 'client', element: <Client />,
+          children: [{ path: ':id', element: <EditClient /> }]
+        },
         { path: 'products', element: <Products /> },
         { path: 'blog', element: <Blog /> },
         { path: 'profile', element: <Profile /> },
@@ -51,12 +49,12 @@ export default function Router() {
       element: <LogoOnlyLayout />,
       children: [
         { path: '/', element: <Navigate to="/dashboard" /> },
-        { path: 'login', element: 
+        { path: 'login', element:
           <IsLogged>
             <Login />
-          </IsLogged> 
+          </IsLogged>
         },
-        { path: 'register', element: 
+        { path: 'register', element:
           <IsLogged>
             <Register />
           </IsLogged> },
