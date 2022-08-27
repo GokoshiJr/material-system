@@ -1,4 +1,5 @@
-import { useState, useEffect, useContext } from 'react';
+import PropTypes from 'prop-types';
+import { useState } from 'react';
 // @mui
 import { styled } from '@mui/material/styles';
 import {
@@ -10,10 +11,6 @@ import {
 import Page from '../components/Page';
 // sections
 import ProfileForm from '../sections/@dashboard/profile/ProfileForm';
-// context
-import { AppContext } from '../context/AppContext'
-// api method
-import { showEmployee } from '../utils/api';
 
 // ----------------------------------------------------------------------
 
@@ -34,6 +31,12 @@ const ContentStyle = styled('div')(({ theme }) => ({
 }));
 
 // ----------------------------------------------------------------------
+
+Register.propTypes = {
+  employee: PropTypes.object,
+  setEmployee: PropTypes.func,
+  title: PropTypes.string
+};
 
 export default function Register({
   employee,
@@ -63,7 +66,9 @@ export default function Register({
               employee={employee}
               setEmployee={setEmployee}
               editEmployeeMode={editEmployeeMode}
+              setEditEmployeeMode={setEditEmployeeMode}
               createEmployee={createEmployee}
+              setCreateEmployee={setCreateEmployee}
             />
           </ContentStyle>
         </Container>

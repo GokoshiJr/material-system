@@ -17,6 +17,8 @@ import {
   TableContainer,
   TablePagination,
 } from '@mui/material';
+// sweetalert2
+import Swal from 'sweetalert2';
 // components
 import EditUser from './EditUser';
 import Page from '../components/Page';
@@ -25,12 +27,10 @@ import Scrollbar from '../components/Scrollbar';
 import Iconify from '../components/Iconify';
 import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashboard/user';
-// mock
-// import USERLIST from '../_mock/user';
 // context
-import { AppContext } from '../context/AppContext'
-// api method
-import { getEmployees, showEmployee } from '../utils/api'
+import { AppContext } from '../context/AppContext';
+// api methods
+import { getEmployees, showEmployee, eliminateEmployee, updateEmployee } from '../utils/api';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -90,7 +90,7 @@ export default function User() {
     userId: 'cargando...'
   })
 
-  const [USERLIST, setUSERLIST] = useState([{_id: 1, name: 'epa Alex'}])
+  const [USERLIST, setUSERLIST] = useState([{_id: '1', name: 'epa Alex'}])
 
   const [page, setPage] = useState(0);
 
@@ -121,6 +121,43 @@ export default function User() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
 
+  const eliminateSelected = async () => {
+    let title = '¿Desea eliminar estos usuarios?';
+    if (selected.length === 1) title = '¿Desea elimina este usuario?';
+    Swal.fire({
+      title,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Confirmar',
+      cancelButtonText: 'Cancelar',
+      background: `rgba(210,210,210,1)`,
+      backdrop: `rgba(0,0,0,0)`
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        selected.map(async (element) => {
+          await eliminateEmployee(auth.token, element);
+          /* actualiza los empleados de ultimo para evitar el 304 */
+          if (element === selected[selected.length-1]) await getEmp();
+        })
+        setSelected([])
+        Swal.fire({
+          icon: 'success',
+          title: 'Empleado eliminado con exito',
+          background: `rgba(210,210,210,1)`,
+          backdrop: `rgba(0,0,0,0)`
+        })
+      }
+    }).catch((err) => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Ocurrió un error',
+        text: `Epa Alex`
+      })
+    })
+  }
+
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -128,19 +165,21 @@ export default function User() {
   };
 
   const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelecteds = USERLIST.map((n) => n.name);
-      setSelected(newSelecteds);
+    if (event.target.checked && selected.length === 0) {
+      /* evita seleccionar a los admin, cuando se escogen a todos los registros */
+      const newSelecteds = USERLIST.filter((n) => n.userId.roles[0].name !== 'admin');
+      const select = newSelecteds.map((n) => n._id);
+      setSelected(select);
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
+  const handleClick = (event, _id) => {
+    const selectedIndex = selected.indexOf(_id);
     let newSelected = [];
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(selected, _id);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -183,9 +222,15 @@ export default function User() {
               Crear Empleado
             </Button>
           </Stack>
-
           <Card>
-            <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
+            <UserListToolbar
+              numSelected={selected.length}
+              filterName={filterName}
+              onFilterName={handleFilterByName}
+              setFilterName={setFilterName}
+              selected={selected}
+              eliminateSelected={eliminateSelected}
+            />
             <Scrollbar>
               <TableContainer sx={{ minWidth: 800 }}>
                 <Table>
@@ -197,6 +242,8 @@ export default function User() {
                     numSelected={selected.length}
                     onRequestSort={handleRequestSort}
                     onSelectAllClick={handleSelectAllClick}
+                    selected={selected}
+                    setSelected={setSelected}
                   />
                   <TableBody>
                     {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
@@ -210,7 +257,7 @@ export default function User() {
                         accessState,
                         avatarUrl
                       } = row;
-                      const isItemSelected = selected.indexOf(name) !== -1;
+                      const isItemSelected = selected.indexOf(_id) !== -1;
                       return (
                         <TableRow
                           hover
@@ -221,7 +268,7 @@ export default function User() {
                           aria-checked={isItemSelected}
                         >
                           <TableCell padding="checkbox">
-                            <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, name)} />
+                            <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, _id)} />
                           </TableCell>
                           <TableCell component="th" scope="row" padding="none">
                             <Stack direction="row" alignItems="center" spacing={2}>
@@ -245,9 +292,11 @@ export default function User() {
                           </TableCell>
                           <TableCell align="right">
                             <UserMoreMenu
-                              employeeId={_id}
-                              getEmployees={getEmployees}
-                              setUSERLIST={setUSERLIST}
+                              elementId={_id}
+                              getElements={getEmployees}
+                              setElements={setUSERLIST}
+                              updateElement={updateEmployee}
+                              eliminateElement={eliminateEmployee}
                               accessState={accessState}
                             />
                           </TableCell>
