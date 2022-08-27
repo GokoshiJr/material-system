@@ -7,18 +7,28 @@ const getIcon = (name) => <Iconify icon={name} width={22} height={22} />;
 
 const navConfig = [
   {
-    title: 'profile',
+    title: 'Mi Perfil',
     path: '/dashboard/profile',
     icon: getIcon('eva:options-2-fill'),
   },
   {
-    title: 'dashboard',
+    title: 'Dashboard',
     path: '/dashboard/app',
     icon: getIcon('eva:pie-chart-2-fill'),
   },
   {
-    title: 'user',
+    title: 'Usuarios',
     path: '/dashboard/user',
+    icon: getIcon('eva:people-fill'),
+  },
+  {
+    title: 'Clientes',
+    path: '/dashboard/client',
+    icon: getIcon('eva:people-fill'),
+  },
+  {
+    title: 'Campañas',
+    path: '/dashboard/campaign',
     icon: getIcon('eva:people-fill'),
   },
   {
