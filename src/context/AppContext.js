@@ -16,7 +16,9 @@ function AppProvider({ children }) {
   const [products, setProducts] = React.useState(null);
 
   const signout = () => {
-    window.localStorage.setItem("token", "")
+    window.localStorage.setItem("token", "");
+    setLoggedUser(null);
+    setLoggedEmployee(null);
     setToken("");
   }
 
