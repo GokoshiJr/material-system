@@ -48,7 +48,7 @@ export default function Register({
   const [createEmployee, setCreateEmployee] = useState(true);
 
   return (
-    <Page title="User 2">
+    <Page title="Empleado">
       <RootStyle>
         <Container>
           <ContentStyle>

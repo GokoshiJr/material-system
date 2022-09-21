@@ -1,10 +1,13 @@
+import { useState, useContext, useEffect } from 'react';
 import { faker } from '@faker-js/faker';
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Grid, Container, Typography } from '@mui/material';
+import { Grid, Container, Typography, Card, CardHeader } from '@mui/material';
+import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ZAxis } from 'recharts';
 // components
 import Page from '../components/Page';
 import Iconify from '../components/Iconify';
+import CampaignPrediction from '../components/CampaignPrediction';
 // sections
 import {
   AppTasks,
@@ -17,36 +20,130 @@ import {
   AppCurrentSubject,
   AppConversionRates,
 } from '../sections/@dashboard/app';
+import { getPredictions, stadisticsCampaign } from '../utils/ia';
+// context
+import { AppContext } from '../context/AppContext';
 
 // ----------------------------------------------------------------------
 
 export default function DashboardApp() {
   const theme = useTheme();
+  const auth = useContext(AppContext);
+
+  const [test, setTest] = useState([
+    {x: 0, y: 0},
+    {x: 1, y: 1}
+  ])
+
+  const [predData, setPredData] = useState([
+    {x: 0, y: 0},
+    {x: 1, y: 1}
+  ])
+
+  const [stads, setStads] = useState({
+    'total': 0,
+    'on': 0,
+    'paused': 0,
+    'finalized': 0
+  })
+  const [data, setData] = useState({})
+
+  const getPred = async () => {
+    const pred = await getPredictions(auth.token);
+    const a = pred.res.data
+    setTest(a.test)
+    setPredData(a.prediction)
+    console.log(a)
+    console.log(test)
+  }
+  console.log(test)
+  const getStad = async () => {
+    const res = await stadisticsCampaign(auth.token)
+    setStads(res.res.data);
+    console.log(res.res.data)
+  }
+
+  useEffect(() => {
+    getStad()
+    getPred();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  /* const data = [
+    { x: 100, y: 200, z: 200 },
+    { x: 120, y: 100, z: 260 },
+    { x: 170, y: 300, z: 400 },
+    { x: 140, y: 250, z: 280 },
+    { x: 150, y: 400, z: 500 },
+    { x: 110, y: 280, z: 200 },
+  ]; */
 
   return (
     <Page title="Dashboard">
       <Container maxWidth="xl">
+
         <Typography variant="h4" sx={{ mb: 5 }}>
-          Hi, Welcome back
+          Datos estadísticos de las campañas de Ads
         </Typography>
 
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          <Grid item xs={12} sm={6} md={3}>
+            <AppWidgetSummary title="Total de Campañas" total={stads.total} icon={'ant-design:android-filled'} />
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <AppWidgetSummary title="Campañas Activas" total={stads.on} color="info" icon={'ant-design:apple-filled'} />
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <AppWidgetSummary title="Campañas Pausadas" total={stads.paused} color="warning" icon={'ant-design:windows-filled'} />
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <AppWidgetSummary title="Campañas Finalizadas" total={stads.finalized} color="error" icon={'ant-design:bug-filled'} />
+          </Grid>
+        </Grid>
+
+        <Card sx={{ mb: 4 }}>
+          <CardHeader title={'Predicciones'} subheader={'Pago por dia x Duracion de la campaña'} />
+
+            <ScatterChart
+              width={800}
+              height={500}
+              margin={{
+                top: 20,
+                right: 20,
+                bottom: 20,
+                left: 20,
+              }}
+            >
+              <CartesianGrid />
+              <XAxis type="number" dataKey="x" name="Dias" unit="d" />
+              <YAxis yAxisId="left" type="number" dataKey="y" name="Pago" unit="$" stroke="#8884d8" />
+              <YAxis
+                yAxisId="right"
+                type="number"
+                dataKey="y"
+                name="Pago(p)"
+                unit="$"
+                orientation="right"
+                stroke="#82ca9d"
+                domain={[0, 60]}
+              />
+              <Tooltip cursor={{ strokeDasharray: '3 3' }} />
+
+              <Scatter yAxisId="left" name="A school" data={test} fill="#8884d8" />
+              <Scatter yAxisId="right" name="A school" data={predData} fill="#82ca9d" />
+            </ScatterChart>
+
+        </Card>
+
+
+
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Weekly Sales" total={714000} icon={'ant-design:android-filled'} />
+          <Grid item xs={12} md={6} lg={8}>
+            <CampaignPrediction />
           </Grid>
-
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="New Users" total={1352831} color="info" icon={'ant-design:apple-filled'} />
-          </Grid>
-
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Item Orders" total={1723315} color="warning" icon={'ant-design:windows-filled'} />
-          </Grid>
-
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Bug Reports" total={234} color="error" icon={'ant-design:bug-filled'} />
-          </Grid>
-
           <Grid item xs={12} md={6} lg={8}>
             <AppWebsiteVisits
               title="Website Visits"
@@ -82,6 +179,34 @@ export default function DashboardApp() {
                   type: 'line',
                   fill: 'solid',
                   data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39],
+                },
+              ]}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={6} lg={8}>
+            <AppWebsiteVisits
+              title="Campañas"
+              subheader="Prediccion de inversion por dia"
+              chartLabels={[44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43]}
+              chartData={[
+                /* {
+                  name: 'Team A',
+                  type: 'column',
+                  fill: 'solid',
+                  data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30],
+                }
+                {
+                  name: 'Team B',
+                  type: 'area',
+                  fill: 'gradient',
+                  data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43],
+                }, */
+                {
+                  name: 'Team C',
+                  type: 'line',
+                  fill: 'solid',
+                  data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43],
                 },
               ]}
             />
