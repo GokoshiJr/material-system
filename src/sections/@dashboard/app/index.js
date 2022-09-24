@@ -7,3 +7,6 @@ export { default as AppWebsiteVisits } from './AppWebsiteVisits';
 export { default as AppWidgetSummary } from './AppWidgetSummary';
 export { default as AppCurrentSubject } from './AppCurrentSubject';
 export { default as AppConversionRates } from './AppConversionRates';
+export { default as AppCampaignTypesBarChart } from './AppCampaignTypesBarChart';
+export { default as AppCampaignPredictionScatterPlot } from './AppCampaignPredictionScatterPlot';
+export { default as AppCampaignAudienceAgeScatterPlot } from './AppCampaignAudienceAgeScatterPlot'; 

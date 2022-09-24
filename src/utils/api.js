@@ -181,7 +181,7 @@ async function getMe(token) {
     return res;
   } catch (err) {
     console.log(err)
-    return null;
+    return {data: 'logout'};
   }
 }
 

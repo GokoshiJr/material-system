@@ -17,10 +17,25 @@ export default function RequireAuth({ children }) {
   const location = useLocation();
 
   const getUser = async () => {
-    const { data } = await getMe(auth.token);
-    auth.setLoggedUser(data.user);
-    data.employee.userId = data.employee.userId.email;
-    auth.setLoggedEmployee(data.employee);
+    
+    try {
+      const { data } = await getMe(auth.token);
+      
+      if (data === "logout") {
+        auth.signout()
+        return <Navigate to="/login" state={{ from: location }} replace />
+      } 
+
+      auth.setLoggedUser(data.user);
+      data.employee.userId = data.employee.userId.email;
+      auth.setLoggedEmployee(data.employee);  
+      
+      
+      
+    } catch (error) {
+      console.log(error)
+    }
+    
   }
 
   if (!auth.loggedUser && auth.token) {
@@ -28,7 +43,7 @@ export default function RequireAuth({ children }) {
   }
 
   // se ejecuta al recargar la pag / renderizar el provider
-  axios({
+  /* axios({
     headers: {"x-access-token": auth.token},
     url: `${API_URL}/auth/isLogged`,
     method: 'POST'
@@ -40,9 +55,10 @@ export default function RequireAuth({ children }) {
     console.log(err)
     console.log('Log out')
     auth.signout()
-  })
+  }) */
 
   if (!auth.token) {
+    // logout
     return <Navigate to="/login" state={{ from: location }} replace />
   }
 

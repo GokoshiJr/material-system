@@ -3,7 +3,19 @@ import { faker } from '@faker-js/faker';
 // @mui
 import { useTheme } from '@mui/material/styles';
 import { Grid, Container, Typography, Card, CardHeader } from '@mui/material';
-import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ZAxis } from 'recharts';
+import {
+  ScatterChart,
+  Scatter,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  ZAxis,
+  Legend,
+  BarChart,
+  Bar
+} from 'recharts';
 // components
 import Page from '../components/Page';
 import Iconify from '../components/Iconify';
@@ -19,6 +31,9 @@ import {
   AppWidgetSummary,
   AppCurrentSubject,
   AppConversionRates,
+  AppCampaignTypesBarChart,
+  AppCampaignPredictionScatterPlot,
+  AppCampaignAudienceAgeScatterPlot
 } from '../sections/@dashboard/app';
 import { getPredictions, stadisticsCampaign } from '../utils/ia';
 // context
@@ -31,22 +46,29 @@ export default function DashboardApp() {
   const auth = useContext(AppContext);
 
   const [test, setTest] = useState([
-    {x: 0, y: 0},
-    {x: 1, y: 1}
+    {x: 5, y: 5},
+    {x: 10, y: 10}
   ])
 
   const [predData, setPredData] = useState([
-    {x: 0, y: 0},
-    {x: 1, y: 1}
+    {x: 8, y: 8},
+    {x: 15, y: 15}
   ])
 
   const [stads, setStads] = useState({
     'total': 0,
     'on': 0,
     'paused': 0,
-    'finalized': 0
+    'finalized': 0,
+    'campaignTypes': [{
+      label: 'epa',
+      value: 21
+    }]
   })
-  const [data, setData] = useState({})
+
+  const [campaignTypes, setCampaignTypes] = useState([{
+    value: 31, label: 'Alcance'
+  }])
 
   const getPred = async () => {
     const pred = await getPredictions(auth.token);
@@ -56,27 +78,20 @@ export default function DashboardApp() {
     console.log(a)
     console.log(test)
   }
-  console.log(test)
+
   const getStad = async () => {
     const res = await stadisticsCampaign(auth.token)
     setStads(res.res.data);
     console.log(res.res.data)
+	  console.log('epa Alex')
+	  
   }
 
   useEffect(() => {
-    getStad()
+    getStad();
     getPred();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  /* const data = [
-    { x: 100, y: 200, z: 200 },
-    { x: 120, y: 100, z: 260 },
-    { x: 170, y: 300, z: 400 },
-    { x: 140, y: 250, z: 280 },
-    { x: 150, y: 400, z: 500 },
-    { x: 110, y: 280, z: 200 },
-  ]; */
 
   return (
     <Page title="Dashboard">
@@ -88,62 +103,115 @@ export default function DashboardApp() {
 
         <Grid container spacing={3} sx={{ mb: 4 }}>
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Total de Campañas" total={stads.total} icon={'ant-design:android-filled'} />
+            <AppWidgetSummary 
+              title="Total de Campañas" 
+              total={stads.total} 
+              icon={'ant-design:android-filled'} 
+            />
           </Grid>
-
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Campañas Activas" total={stads.on} color="info" icon={'ant-design:apple-filled'} />
+            <AppWidgetSummary 
+              title="Campañas Activas" 
+              total={stads.on} 
+              color="info" 
+              icon={'ant-design:apple-filled'} 
+            />
           </Grid>
-
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Campañas Pausadas" total={stads.paused} color="warning" icon={'ant-design:windows-filled'} />
+            <AppWidgetSummary 
+              title="Campañas Pausadas" 
+              total={stads.paused} 
+              color="warning" 
+              icon={'ant-design:windows-filled'} 
+            />
           </Grid>
-
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Campañas Finalizadas" total={stads.finalized} color="error" icon={'ant-design:bug-filled'} />
+            <AppWidgetSummary 
+              title="Campañas Finalizadas" 
+              total={stads.finalized} 
+              color="error" 
+              icon={'ant-design:bug-filled'} 
+            />
           </Grid>
         </Grid>
-
-        <Card sx={{ mb: 4 }}>
-          <CardHeader title={'Predicciones'} subheader={'Pago por dia x Duracion de la campaña'} />
-
-            <ScatterChart
-              width={800}
-              height={500}
-              margin={{
-                top: 20,
-                right: 20,
-                bottom: 20,
-                left: 20,
-              }}
-            >
-              <CartesianGrid />
-              <XAxis type="number" dataKey="x" name="Dias" unit="d" />
-              <YAxis yAxisId="left" type="number" dataKey="y" name="Pago" unit="$" stroke="#8884d8" />
-              <YAxis
-                yAxisId="right"
-                type="number"
-                dataKey="y"
-                name="Pago(p)"
-                unit="$"
-                orientation="right"
-                stroke="#82ca9d"
-                domain={[0, 60]}
-              />
-              <Tooltip cursor={{ strokeDasharray: '3 3' }} />
-
-              <Scatter yAxisId="left" name="A school" data={test} fill="#8884d8" />
-              <Scatter yAxisId="right" name="A school" data={predData} fill="#82ca9d" />
-            </ScatterChart>
-
-        </Card>
-
-
-
+        
         <Grid container spacing={3}>
-          <Grid item xs={12} md={6} lg={8}>
+
+          <Grid item xs={12} md={12} lg={8}>
+            <AppCampaignPredictionScatterPlot 
+              test={test}
+              predData={predData}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={12} lg={4}>
             <CampaignPrediction />
           </Grid>
+          
+          <Grid item xs={12} md={6} lg={4}>
+            {stads.genderAudience &&
+              <AppCurrentVisits
+                title="Campañas por género"
+                chartData={stads.genderAudience}
+                chartColors={[
+                  theme.palette.chart.violet[0],
+                  theme.palette.chart.yellow[0],
+                  theme.palette.chart.blue[0]
+                ]}
+              />
+            }
+          </Grid>
+
+          <Grid item xs={12} md={12} lg={8}>            
+            <AppCampaignTypesBarChart 
+              title={'Histograma tipos de campañas'}
+              subtitle={'Type'}
+              chartData={stads.campaignTypes}
+            />            
+          </Grid>          
+
+          <Grid item xs={12} md={12} lg={8}>
+            {stads.ageAudienceTarget &&
+              <AppCampaignAudienceAgeScatterPlot
+                data={stads.ageAudienceTarget}
+              />
+            }
+          </Grid>
+
+          <Grid item xs={12} md={6} lg={4}>
+            {stads.genderAudience &&
+              <AppCurrentVisits
+                title="Rango de edad que mas se repite, max, min TODO"
+                chartData={stads.genderAudience}
+                chartColors={[
+                  theme.palette.chart.violet[0],
+                  theme.palette.chart.yellow[0],
+                  theme.palette.chart.blue[0]
+                ]}
+              />
+            }
+          </Grid>
+
+          <Grid item xs={12} md={6} lg={8}>
+            <AppWebsiteVisits
+              title="Website Visits"
+              subheader="(+43%) than last year"
+              chartLabels={[
+                '01/01/2003',
+                '02/01/2003',
+                '03/01/2003'
+              ]}
+              chartData={[
+                {
+                  name: 'Team A',
+                  type: 'column',
+                  fill: 'solid',
+                  data: [23, 11, 22],
+                }
+              ]}
+            />
+          </Grid>
+
           <Grid item xs={12} md={6} lg={8}>
             <AppWebsiteVisits
               title="Website Visits"
@@ -188,7 +256,19 @@ export default function DashboardApp() {
             <AppWebsiteVisits
               title="Campañas"
               subheader="Prediccion de inversion por dia"
-              chartLabels={[44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43]}
+              chartLabels={[
+                '01/01/2003',
+                '02/01/2003',
+                '03/01/2003',
+                '04/01/2003',
+                '05/01/2003',
+                '06/01/2003',
+                '07/01/2003',
+                '08/01/2003',
+                '09/01/2003',
+                '10/01/2003',
+                '11/01/2003',
+              ]}
               chartData={[
                 /* {
                   name: 'Team A',
@@ -333,7 +413,9 @@ export default function DashboardApp() {
               ]}
             />
           </Grid>
+
         </Grid>
+
       </Container>
     </Page>
   );

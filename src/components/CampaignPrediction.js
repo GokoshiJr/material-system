@@ -1,6 +1,4 @@
-import PropTypes from 'prop-types';
-import { useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useContext, useEffect } from 'react';
 import { useFormik, Form, FormikProvider } from 'formik';
 import * as Yup from 'yup';
 // material
@@ -17,7 +15,6 @@ import { oneHotPrediction } from '../utils/ia';
 CampaignPrediction.propTypes = {};
 
 export default function CampaignPrediction() {
-
   const auth = useContext(AppContext);
 
   const PredictFormSchema = Yup.object().shape({
@@ -54,36 +51,38 @@ export default function CampaignPrediction() {
   }
 
   const handleSubmit = async (event) => {
+    
     event.preventDefault();
     const errorsCount = Object.keys(errors)
     if (errorsCount.length === 0) {
       console.log('create employee')
-      alert(values.duration)
       const res = await oneHotPrediction(auth.token, values.duration);
-
-      Swal.fire({
-        icon: 'success',
-        title: res,
-        background: `rgba(210,210,210,1)`,
-        backdrop: `rgba(0,0,0,0)`
-      })
-
+      // Swal.fire({
+      //   icon: 'success',
+      //   title: res,
+      //   background: `rgba(210,210,210,1)`,
+      //   backdrop: `rgba(0,0,0,0)`
+      // })
+      console.log(res)
+      
       setValues({
-        pay: 10
+        duration: 0,
+        pay: 0
       })
-
+      
     }
+    
   }
 
   useEffect(() => {
-
+    setValues({ duration: 1, pay: 1 })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  return (
-    <Card sx={{ mb: 4 }}>
+  return (    
+    <Card sx={{ mb: 0 }}>
       <CardHeader
-        title={'Prediccion'}
+        title={'Prediccion One Hot'}
         subheader={'Ingrese la duracion de la campaña para estimar la inversion por dia'}
       />
       <Box sx={{ p: 3, pb: 1, mb: 3 }} dir="ltr">

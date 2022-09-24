@@ -106,6 +106,7 @@ export default function User() {
 
   const getEmp = async () => {
     const { data } = await getEmployees(auth.token);
+    console.log(data)
     setUSERLIST(data);
   }
 
@@ -287,7 +288,7 @@ export default function User() {
                           }</TableCell>
                           <TableCell align="left">
                             <Label variant="ghost" color={accessState ? 'success' : 'error'}>
-                              {accessState ?'Activo' :'Baneado'}
+                              {accessState ? 'Activo' :'Baneado'}
                             </Label>
                           </TableCell>
                           <TableCell align="right">
