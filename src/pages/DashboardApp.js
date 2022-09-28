@@ -2,7 +2,7 @@ import { useState, useContext, useEffect } from 'react';
 import { faker } from '@faker-js/faker';
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Grid, Container, Typography, Card, CardHeader } from '@mui/material';
+import { Grid, Container, Typography, Card, CardHeader, Skeleton } from '@mui/material';
 import {
   ScatterChart,
   Scatter,
@@ -43,17 +43,12 @@ import { AppContext } from '../context/AppContext';
 
 export default function DashboardApp() {
   const theme = useTheme();
+
   const auth = useContext(AppContext);
 
-  const [test, setTest] = useState([
-    {x: 5, y: 5},
-    {x: 10, y: 10}
-  ])
+  const [test, setTest] = useState([])
 
-  const [predData, setPredData] = useState([
-    {x: 8, y: 8},
-    {x: 15, y: 15}
-  ])
+  const [predData, setPredData] = useState([])
 
   const [stads, setStads] = useState({
     'total': 0,
@@ -84,7 +79,7 @@ export default function DashboardApp() {
     setStads(res.res.data);
     console.log(res.res.data)
 	  console.log('epa Alex')
-	  
+
   }
 
   useEffect(() => {
@@ -103,53 +98,78 @@ export default function DashboardApp() {
 
         <Grid container spacing={3} sx={{ mb: 4 }}>
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary 
-              title="Total de Campañas" 
-              total={stads.total} 
-              icon={'ant-design:android-filled'} 
+            <AppWidgetSummary
+              title="Total de Campañas"
+              total={stads.total}
+              icon={'ant-design:android-filled'}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary 
-              title="Campañas Activas" 
-              total={stads.on} 
-              color="info" 
-              icon={'ant-design:apple-filled'} 
+            <AppWidgetSummary
+              title="Campañas Activas"
+              total={stads.on}
+              color="info"
+              icon={'ant-design:apple-filled'}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary 
-              title="Campañas Pausadas" 
-              total={stads.paused} 
-              color="warning" 
-              icon={'ant-design:windows-filled'} 
+            <AppWidgetSummary
+              title="Campañas Pausadas"
+              total={stads.paused}
+              color="warning"
+              icon={'ant-design:windows-filled'}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary 
-              title="Campañas Finalizadas" 
-              total={stads.finalized} 
-              color="error" 
-              icon={'ant-design:bug-filled'} 
+            <AppWidgetSummary
+              title="Campañas Finalizadas"
+              total={stads.finalized}
+              color="error"
+              icon={'ant-design:bug-filled'}
             />
           </Grid>
         </Grid>
-        
+
         <Grid container spacing={3}>
 
           <Grid item xs={12} md={12} lg={8}>
-            <AppCampaignPredictionScatterPlot 
-              test={test}
-              predData={predData}
-            />
+            {test.length !== 0
+              ?
+              <AppCampaignPredictionScatterPlot 
+                test={test}
+                predData={predData}
+              />
+              :
+              <Card>
+                <CardHeader title={"Predicciones"} />
+                <Skeleton
+                  variant="rectangular"
+                  height={440}
+                  sx={{ bgcolor: 'grey.400', m: 3 }}
+                />
+              </Card>
+            }
           </Grid>
 
-          <Grid item xs={12} md={12} lg={4}>
-            <CampaignPrediction />
-          </Grid>
-          
           <Grid item xs={12} md={6} lg={4}>
-            {stads.genderAudience &&
+            {test.length !== 0
+              ?
+              <CampaignPrediction />
+              :
+              <Card>
+                <CardHeader title={"Predicciones"} />
+                <Skeleton
+                  variant="rectangular"
+                  height={440}
+                  sx={{ bgcolor: 'grey.400', m: 3 }}
+                />
+              </Card>
+            }
+          </Grid>
+
+          <Grid item xs={12} md={6} lg={4}>
+            {stads.genderAudience
+              ?
               <AppCurrentVisits
                 title="Campañas por género"
                 chartData={stads.genderAudience}
@@ -159,16 +179,37 @@ export default function DashboardApp() {
                   theme.palette.chart.blue[0]
                 ]}
               />
+              :
+              <Card>
+                <CardHeader title={"Campañas por género"} />
+                <Skeleton
+                  variant="rectangular"
+                  height={350}
+                  sx={{ bgcolor: 'grey.400', m: 3 }}
+                />
+              </Card>
             }
           </Grid>
 
-          <Grid item xs={12} md={12} lg={8}>            
-            <AppCampaignTypesBarChart 
-              title={'Histograma tipos de campañas'}
-              subtitle={'Type'}
-              chartData={stads.campaignTypes}
-            />            
-          </Grid>          
+          <Grid item xs={12} md={12} lg={8}>
+            {stads.genderAudience
+              ?
+              <AppCampaignTypesBarChart
+                title={'Histograma tipos de campañas'}
+                subtitle={'Type'}
+                chartData={stads.campaignTypes}
+              />
+              :
+              <Card>
+                <CardHeader title={"Histograma tipos de campañas"} />
+                <Skeleton
+                  variant="rectangular"
+                  height={350}
+                  sx={{ bgcolor: 'grey.400', m: 3 }}
+                />
+              </Card>
+            }
+          </Grid>
 
           <Grid item xs={12} md={12} lg={8}>
             {stads.ageAudienceTarget &&

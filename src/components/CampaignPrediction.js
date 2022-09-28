@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useFormik, Form, FormikProvider } from 'formik';
 import * as Yup from 'yup';
 // material
@@ -16,7 +16,7 @@ CampaignPrediction.propTypes = {};
 
 export default function CampaignPrediction() {
   const auth = useContext(AppContext);
-
+  const [predP, setPred] = useState(0)
   const PredictFormSchema = Yup.object().shape({
     duration: Yup.number()
       .min(7, 'Minimo 7 dias')
@@ -47,28 +47,34 @@ export default function CampaignPrediction() {
 
   const handleCleanValues = () => {
     resetForm()
+    setPred(5)
     setValues({ duration: 1, pay: 1 })
   }
 
-  const handleSubmit = async (event) => {
-    
+  const oneHotPred = async () => {
+    console.log(values.duration)
+    const { res } = await oneHotPrediction(auth.token, values.duration);
+    // setPred(res)
+    console.log(res.data.pred[0].prediction)
+
+    // setValues({
+    //     duration: 0,
+    //     pay: predP.res.data.pred[0].prediction
+    // })
+  }
+
+  const handleSubmit = async (event) => {    
     event.preventDefault();
     const errorsCount = Object.keys(errors)
     if (errorsCount.length === 0) {
       console.log('create employee')
-      const res = await oneHotPrediction(auth.token, values.duration);
+      await oneHotPred()
       // Swal.fire({
       //   icon: 'success',
       //   title: res,
       //   background: `rgba(210,210,210,1)`,
       //   backdrop: `rgba(0,0,0,0)`
       // })
-      console.log(res)
-      
-      setValues({
-        duration: 0,
-        pay: 0
-      })
       
     }
     
@@ -85,6 +91,7 @@ export default function CampaignPrediction() {
         title={'Prediccion One Hot'}
         subheader={'Ingrese la duracion de la campaña para estimar la inversion por dia'}
       />
+      { predP }
       <Box sx={{ p: 3, pb: 1, mb: 3 }} dir="ltr">
         <FormikProvider value={formik}>
           <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
@@ -108,6 +115,7 @@ export default function CampaignPrediction() {
                   helperText={touched.pay && errors.pay}
                   onChange={handleChange}
                 />
+
               </Stack>
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                 <Button variant="contained" color="error" onClick={handleCleanValues}>

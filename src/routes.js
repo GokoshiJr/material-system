@@ -3,6 +3,7 @@ import { Navigate, useRoutes } from 'react-router-dom';
 import DashboardLayout from './layouts/dashboard';
 import LogoOnlyLayout from './layouts/LogoOnlyLayout';
 //
+import Campaign from './pages/Campaign';
 import Client from './pages/Client';
 import Profile from './pages/Profile';
 import Blog from './pages/Blog';
@@ -14,6 +15,7 @@ import Products from './pages/Products';
 import DashboardApp from './pages/DashboardApp';
 import EditUser from './pages/EditUser';
 import EditClient from './pages/EditClient';
+import EditCampaign from './pages/EditCampaign';
 //
 import RequireAuth from './context/RequireAuth';
 import IsLogged from './context/IsLogged';
@@ -34,7 +36,10 @@ export default function Router() {
           path: 'user', element: <User />,
           children: [{ path: ':id', element: <EditUser /> }]
         },
-        { path: 'campaign', element: <Client /> },
+        { 
+          path: 'campaign', element: <Campaign />, 
+          children: [{ path: ':id', element: <EditCampaign /> }]
+        },
         {
           path: 'client', element: <Client />,
           children: [{ path: ':id', element: <EditClient /> }]
