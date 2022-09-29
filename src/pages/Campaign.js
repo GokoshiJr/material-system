@@ -1,11 +1,11 @@
 import { useState, useEffect, useContext } from 'react';
 import { Link as RouterLink, useParams } from 'react-router-dom';
 // material
-import { 
+import {
   Container,
-  Stack, 
+  Stack,
   Typography,
-  Button 
+  Button
 } from '@mui/material';
 import Iconify from '../components/Iconify';
 // context
@@ -13,14 +13,15 @@ import { AppContext } from '../context/AppContext';
 // components
 import EditCampaign from './EditCampaign'
 import Page from '../components/Page';
-import { 
+import {
   CampaignList,
-  CampaignToolbar 
+  CampaignToolbar,
+  CampaignEditForm
 } from '../sections/@dashboard/campaign';
 // mock
 import PRODUCTS from '../_mock/products';
 // api
-import { index } from '../utils/api/campaign'
+import { index, show, clientInCampaign } from '../utils/api/campaign'
 // ----------------------------------------------------------------------
 
 export default function Campaign() {
@@ -30,20 +31,83 @@ export default function Campaign() {
 
   const [campaigns, setCampaigns] = useState([])
 
-  const [showCampaign, setShowCampaign] = useState({})
-  
+  const [showCampaign, setShowCampaign] = useState({
+    name: 'Cargando...',
+    audienceAge: [0, 1],
+    audienceGender: 'Cargando...',
+    campaignState: 'Cargando...',
+    campaignTypeId: {
+      name: 'Cargando...'
+    },
+    demographicsDataSegmentation: 'Cargando...',
+    initDate: 'Cargando...',
+    finalDate: 'Cargando...',
+    interestSegmentation: 'Cargando...',
+    isPost: 'Cargando...',
+    isVideo: 'Cargando...',
+    linkAPI: 'Cargando...',
+    perDayBudget: 0,
+    promotionDuration: 0,
+    ubication: 'Cargando...'
+  })
+
+  const [projection, setProjection] = useState({
+    link: 'Cargando...',
+    balances: [0],
+    campaignId: 'Cargando...',
+    clientId: 'Cargando...'
+  })
+
   const getCampaigns = async () => {
     const { data } = await index(auth.token);
     setCampaigns(data);
   }
 
   const showCamp = async () => {
-    // const { data } = await showCampaign(auth.token, id);
-    // setCampaign(data);
+    // retorna la campaña por su id
+    const { data } = await show(auth.token, id);
+    setShowCampaign(data);
+  }
+
+  const showClientInCampaign = async () => {
+    // retorna la campaña por su id
+    const { data } = await clientInCampaign(auth.token, id);
+    console.log(data)
+    setProjection(data);
   }
 
   useEffect(() => {
-    if (id && id !== "add") showCamp();
+    // para no ver la campaña vista anteriormente
+    setShowCampaign({
+      name: 'Cargando...',
+      audienceAge: [0, 1],
+      audienceGender: 'Cargando...',
+      campaignState: 'Cargando...',
+      campaignTypeId: {
+        name: 'Cargando...'
+      },
+      demographicsDataSegmentation: 'Cargando...',
+      initDate: 'Cargando...',
+      finalDate: 'Cargando...',
+      interestSegmentation: 'Cargando...',
+      isPost: 'Cargando...',
+      isVideo: 'Cargando...',
+      linkAPI: 'Cargando...',
+      perDayBudget: 0,
+      promotionDuration: 0,
+      ubication: 'Cargando...'
+    })
+    setProjection({
+      link: 'Cargando...',
+      balances: [0],
+      campaignId: 'Cargando...',
+      clientId: 'Cargando...'
+    })
+    console.log('ya renderizo')
+    if (id && id !== "add") {
+      showCamp();
+      showClientInCampaign();
+    }
     if (!id) getCampaigns()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
@@ -81,8 +145,8 @@ export default function Campaign() {
   return (
     <EditCampaign
       campaign={showCampaign}
-      setCampaign={setShowCampaign}
-      title={'Editar'}
+      projection={projection}
+      title={'Ver'}
     />
   )
 

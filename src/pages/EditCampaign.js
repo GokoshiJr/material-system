@@ -10,8 +10,11 @@ import {
 // components
 import Page from '../components/Page';
 // sections
-import ProfileForm from '../sections/@dashboard/profile/ProfileForm';
-
+import {
+  CampaignCreateForm,
+  CampaignEditForm
+} from '../sections/@dashboard/campaign';
+import ProjectionEditForm from '../sections/@dashboard/campaign/ProjectionEditForm';
 // ----------------------------------------------------------------------
 
 const RootStyle = styled('div')(({ theme }) => ({
@@ -34,13 +37,14 @@ const ContentStyle = styled('div')(({ theme }) => ({
 
 Register.propTypes = {
   campaign: PropTypes.object,
+  projection: PropTypes.object,
   setCampaign: PropTypes.func,
   title: PropTypes.string
 };
 
 export default function Register({
   campaign,
-  setCampaign,
+  projection,
   title
 }) {
 
@@ -62,7 +66,23 @@ export default function Register({
                 {title} Campaña
               </Typography>
             </Stack>
-            CampaignForm
+            <CampaignEditForm
+              campaign={campaign}
+            />
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="space-between"
+              mt={5}
+              mb={5}
+            >
+              <Typography variant="h4" gutterBottom>
+                Proyección
+              </Typography>
+            </Stack>
+            <ProjectionEditForm
+              projection={projection}
+            />
           </ContentStyle>
         </Container>
       </RootStyle>
