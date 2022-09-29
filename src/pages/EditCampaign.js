@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
 // @mui
 import { styled } from '@mui/material/styles';
 import {
@@ -11,10 +10,10 @@ import {
 import Page from '../components/Page';
 // sections
 import {
-  CampaignCreateForm,
   CampaignEditForm
 } from '../sections/@dashboard/campaign';
 import ProjectionEditForm from '../sections/@dashboard/campaign/ProjectionEditForm';
+
 // ----------------------------------------------------------------------
 
 const RootStyle = styled('div')(({ theme }) => ({
@@ -38,19 +37,16 @@ const ContentStyle = styled('div')(({ theme }) => ({
 Register.propTypes = {
   campaign: PropTypes.object,
   projection: PropTypes.object,
-  setCampaign: PropTypes.func,
-  title: PropTypes.string
+  title: PropTypes.string,
+  showClientInCampaign: PropTypes.func
 };
 
 export default function Register({
   campaign,
   projection,
-  title
+  title,
+  showClientInCampaign
 }) {
-
-  const [editEmployeeMode, setEditEmployeeMode] = useState(true);
-  const [createEmployee, setCreateEmployee] = useState(true);
-
   return (
     <Page title="Campaña">
       <RootStyle>
@@ -82,6 +78,7 @@ export default function Register({
             </Stack>
             <ProjectionEditForm
               projection={projection}
+              showClientInCampaign={showClientInCampaign}
             />
           </ContentStyle>
         </Container>

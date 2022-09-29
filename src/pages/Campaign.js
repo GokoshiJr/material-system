@@ -5,7 +5,12 @@ import {
   Container,
   Stack,
   Typography,
-  Button
+  Button,
+  Skeleton,
+  Card,
+  CardHeader,
+  Grid,
+  CardContent
 } from '@mui/material';
 import Iconify from '../components/Iconify';
 // context
@@ -15,11 +20,8 @@ import EditCampaign from './EditCampaign'
 import Page from '../components/Page';
 import {
   CampaignList,
-  CampaignToolbar,
-  CampaignEditForm
+  CampaignToolbar
 } from '../sections/@dashboard/campaign';
-// mock
-import PRODUCTS from '../_mock/products';
 // api
 import { index, show, clientInCampaign } from '../utils/api/campaign'
 // ----------------------------------------------------------------------
@@ -30,6 +32,8 @@ export default function Campaign() {
   const { id } = useParams();
 
   const [campaigns, setCampaigns] = useState([])
+
+  const [isLoading, setIsLoading] = useState(true)
 
   const [showCampaign, setShowCampaign] = useState({
     name: 'Cargando...',
@@ -61,6 +65,7 @@ export default function Campaign() {
   const getCampaigns = async () => {
     const { data } = await index(auth.token);
     setCampaigns(data);
+    setIsLoading(false)
   }
 
   const showCamp = async () => {
@@ -103,7 +108,6 @@ export default function Campaign() {
       campaignId: 'Cargando...',
       clientId: 'Cargando...'
     })
-    console.log('ya renderizo')
     if (id && id !== "add") {
       showCamp();
       showClientInCampaign();
@@ -112,7 +116,7 @@ export default function Campaign() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
 
-  // tabla de empleados
+  // cards de campañas
   if (!id) {
     return (
       <Page title="Campañas">
@@ -126,7 +130,32 @@ export default function Campaign() {
             </Button>
             <CampaignToolbar />
           </Stack>
-          <CampaignList campaigns={campaigns} />
+          {!isLoading
+            ?
+            <CampaignList campaigns={campaigns} />
+            :
+            <Grid container spacing={3}>
+              {[0,1,2,3].map((el, index) => (
+                <Grid key={index} item xs={12} sm={6} md={3}>
+                  <Card>
+                    <Skeleton
+                      variant="rectangular"
+                      height={220}
+                      sx={{ bgcolor: 'grey.400'}}
+                    />
+                    <CardContent>
+                      <Typography variant="subtitle2" noWrap>
+                        {`Campaña ${index+1}`}
+                      </Typography>
+                      <Typography variant="string" sx={{ fontSize: 14 }}>
+                        {`Cargando...`}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          }
         </Container>
       </Page>
     );
@@ -135,17 +164,16 @@ export default function Campaign() {
   // crear campaña
   if (id === "add") {
     return (
-      <EditCampaign
-        title={'Crear'}
-      />
+      'todo'
     )
   }
- 
+
   // editar y ver campaña por id
   return (
     <EditCampaign
       campaign={showCampaign}
       projection={projection}
+      showClientInCampaign={showClientInCampaign}
       title={'Ver'}
     />
   )
