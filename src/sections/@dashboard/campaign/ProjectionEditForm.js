@@ -1,27 +1,40 @@
 import PropTypes from 'prop-types';
 import { useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { useFormik, Form, FormikProvider } from 'formik';
 import * as Yup from 'yup';
 // material
-import { Stack, TextField, Button } from '@mui/material';
+import {
+  Stack,
+  TextField,
+  Button,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  List,
+  Typography
+} from '@mui/material';
 // sweetalert2
 import Swal from 'sweetalert2';
+import Iconify from '../../../components/Iconify';
 // context
 import { AppContext } from '../../../context/AppContext';
 // api method
-
+import { updateBalanceInProjection } from '../../../utils/api/campaign'
 
 // ----------------------------------------------------------------------
 
 ProjectionEditForm.propTypes = {
-  projection: PropTypes.object
+  projection: PropTypes.object,
+  showClientInCampaign: PropTypes.func
 };
 
 export default function ProjectionEditForm({
-  projection
+  projection,
+  showClientInCampaign
 }) {
   const auth = useContext(AppContext);
+
+  const [balanceTotal, setBalanceTotal] = useState(0)
 
   const ProjectionEditFormSchema = Yup.object().shape({
     campaignId: Yup.string()
@@ -47,29 +60,28 @@ export default function ProjectionEditForm({
     resetForm
   } = formik;
 
-  const balance = projection.balances.map((balance, index) => 
-    <li key={index}>{ balance }</li>
+  const balance = projection.balances.map((balance, index) =>    
+    <ListItem disablePadding key={index} sx={{ 
+      mt: 2,
+      borderRadius: '10px', 
+      border: '1px solid', 
+      borderColor: balance>0 ? '#FF0000' : '#00FF00' 
+    }}>
+      <ListItemButton>
+        <ListItemText primary={`${index+1}. ${balance} $`} />
+      </ListItemButton>
+    </ListItem>
   )
-  const handleUpdateEmployee = async () => {
-    // const res = await updateClient(auth.token, id, values);
-    // actualiza el empleado del state
-    // showEmp()
-    // Swal.fire({
-    //   icon: res.icon,
-    //   title: res.title,
-    //   background: `rgba(210,210,210,1)`,
-    //   backdrop: `rgba(0,0,0,0)`
-    // })
-  }
 
   const handleResetValues = () => {
-    console.log(projection)
     setValues({
       // balances: projection.balances[0],
       clientId: `${projection.clientId.name} ${projection.clientId.lastName}`,
       campaignId: projection.campaignId,
       link: projection.link
     })
+    const total = projection.balances.reduce((a, b) => a + b)
+    setBalanceTotal(total)
   }
 
   const handleChange = (event) => {
@@ -110,6 +122,42 @@ export default function ProjectionEditForm({
     // }
   }
 
+  const handleAddBalance = async () => {
+    const balanceArray = projection.balances.map((balance) => balance)
+    Swal.fire({
+      title: 'Ingrese el pago en dolares ($) ejemplo: -100',
+      input: 'text',
+      inputAttributes: {
+        autocapitalize: 'off'
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Guardar',
+      showLoaderOnConfirm: true,
+      preConfirm: (balance) => {
+        balanceArray.push(Number(balance))
+        return updateBalanceInProjection(auth.token, 
+          projection._id, 
+          balanceArray)
+      },
+      allowOutsideClick: () => !Swal.isLoading()
+    }).then((res, err) => {
+      showClientInCampaign()
+      if (res.isConfirmed) {
+        Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: 'Pago agregado con exito',
+          showConfirmButton: false,
+          timer: 1500
+        })
+      }
+
+    }).catch((err) => {
+      console.log(err)
+    })
+
+  }
+
   useEffect(() => {
     console.log('epa projection')
     if (projection) handleResetValues();
@@ -146,17 +194,7 @@ export default function ProjectionEditForm({
             <TextField
               fullWidth
               name='link'
-              label='Limite inferior (años)'
-              {...getFieldProps('link')}
-              inputProps={{readOnly: true}}
-              error={Boolean(touched.link && errors.link)}
-              helperText={touched.link && errors.link}
-              onChange={handleChange}
-            />
-            <TextField
-              fullWidth
-              name='link'
-              label='Limite superior (años)'
+              label='API Link'
               {...getFieldProps('link')}
               inputProps={{readOnly: true}}
               error={Boolean(touched.link && errors.link)}
@@ -164,7 +202,39 @@ export default function ProjectionEditForm({
               onChange={handleChange}
             />
           </Stack>
-          { balance }
+          <Stack direction={{ xs: 'column', sm: 'column' }} spacing={0}>
+            <Typography variant="h4" gutterBottom>
+              Balance Actual
+            </Typography>
+            <Button variant="outlined" size='small'
+              startIcon={<Iconify icon="eva:plus-fill" />}
+              onClick={handleAddBalance}
+              sx={{ mt:2 }}
+            >
+              Añadir pago
+            </Button>
+            <nav aria-label="secondary mailbox folders">
+              <List>
+                { balance }
+              </List>
+              <List>
+                <ListItem 
+                  disablePadding 
+                  sx={{
+                    borderRadius: '10px', 
+                    border: '1px solid',
+                    borderColor: balanceTotal ? '#FF0000' : '#00FF00'
+                  }}
+                >
+                  <ListItemButton>
+                    <ListItemText 
+                      primary={`Deuda Total: ${balanceTotal} $`}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              </List>
+            </nav>
+          </Stack>
         </Stack>
       </Form>
     </FormikProvider>
