@@ -16,6 +16,7 @@ import DashboardApp from './pages/DashboardApp';
 import EditUser from './pages/EditUser';
 import EditClient from './pages/EditClient';
 import EditCampaign from './pages/EditCampaign';
+import ClientCampaigns from './pages/ClientCampaigns';
 //
 import RequireAuth from './context/RequireAuth';
 import IsLogged from './context/IsLogged';
@@ -33,11 +34,19 @@ export default function Router() {
       children: [
         { path: 'app', element: <DashboardApp /> },
         {
+          path: 'induction', element: 'epa',
+          children: [{ path: ':id', element: 'a'}]
+        },
+        {
+          path: 'clientCampaign', element: <ClientCampaigns />,
+          children: [{ path: ':id', element: <ClientCampaigns />}]
+        },
+        {
           path: 'user', element: <User />,
           children: [{ path: ':id', element: <EditUser /> }]
         },
         { 
-          path: 'campaign', element: <Campaign />, 
+          path: 'campaign', element: <Campaign />,
           children: [{ path: ':id', element: <EditCampaign /> }]
         },
         {

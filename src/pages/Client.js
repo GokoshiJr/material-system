@@ -27,6 +27,7 @@ import Scrollbar from '../components/Scrollbar';
 import Iconify from '../components/Iconify';
 import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashboard/user';
+import ClientMoreMenu from '../sections/@dashboard/client/ClientMoreMenu';
 // mock
 // import clientList from '../_mock/user';
 // context
@@ -292,7 +293,7 @@ export default function Client() {
                             </Label>
                           </TableCell> */}
                           <TableCell align="right">
-                            <UserMoreMenu
+                            <ClientMoreMenu
                               elementId={_id}
                               getElements={getClients}
                               setElements={setClientList}
