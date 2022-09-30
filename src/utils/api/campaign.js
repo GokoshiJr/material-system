@@ -3,9 +3,23 @@ import axios from 'axios';
 const API_URL = process.env.REACT_APP_API_URL;
 
 // return client by campaign id
+async function clientCampaigns(token, clientId) {
+  try {
+    const res = await axios({
+      headers: {"x-access-token": token},
+      url: `${API_URL}/campaign/clientCampaigns/${clientId}`,
+      method: 'GET'
+    })
+    return res;
+  } catch (err) {
+    console.log(err)
+    return null;
+  }
+}
+
+// return client by campaign id
 async function updateBalanceInProjection(token, projectionId, balances) {
   try {
-    console.log(balances)
     const res = await axios({
       headers: {"x-access-token": token},
       url: `${API_URL}/projection/${projectionId}`,
@@ -26,7 +40,7 @@ async function clientInCampaign(token, campaignId) {
   try {
     const res = await axios({
       headers: {"x-access-token": token},
-      url: `${API_URL}/campaign/clientInCampaign/${campaignId} `,
+      url: `${API_URL}/campaign/clientInCampaign/${campaignId}`,
       method: 'GET'
     })
     return res;
@@ -67,6 +81,7 @@ async function show(token, id) {
 }
 
 export {
+  clientCampaigns,
   updateBalanceInProjection,
   clientInCampaign,
   index,

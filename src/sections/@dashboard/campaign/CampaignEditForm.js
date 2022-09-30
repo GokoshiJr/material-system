@@ -142,7 +142,6 @@ export default function CampaignEditForm({
   }
 
   useEffect(() => {
-    console.log('epa')
     if (campaign) handleResetValues();
     // if (!client) {
     //   setValues({

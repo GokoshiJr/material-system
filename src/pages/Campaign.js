@@ -77,7 +77,6 @@ export default function Campaign() {
   const showClientInCampaign = async () => {
     // retorna la campaña por su id
     const { data } = await clientInCampaign(auth.token, id);
-    console.log(data)
     setProjection(data);
   }
 

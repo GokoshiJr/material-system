@@ -125,6 +125,8 @@ export default function ProjectionEditForm({
   const handleAddBalance = async () => {
     const balanceArray = projection.balances.map((balance) => balance)
     Swal.fire({
+      background: `rgba(210,210,210,1)`,
+      backdrop: `rgba(0,0,0,0)`,
       title: 'Ingrese el pago en dolares ($) ejemplo: -100',
       input: 'text',
       inputAttributes: {
@@ -134,9 +136,9 @@ export default function ProjectionEditForm({
       confirmButtonText: 'Guardar',
       showLoaderOnConfirm: true,
       preConfirm: (balance) => {
-        balanceArray.push(Number(balance))
-        return updateBalanceInProjection(auth.token, 
-          projection._id, 
+        balanceArray.unshift(Number(balance))
+        return updateBalanceInProjection(auth.token,
+          projection._id,
           balanceArray)
       },
       allowOutsideClick: () => !Swal.isLoading()
@@ -144,22 +146,20 @@ export default function ProjectionEditForm({
       showClientInCampaign()
       if (res.isConfirmed) {
         Swal.fire({
-          position: 'top-end',
           icon: 'success',
           title: 'Pago agregado con exito',
           showConfirmButton: false,
-          timer: 1500
+          timer: 1500,
+          background: `rgba(210,210,210,1)`,
+          backdrop: `rgba(0,0,0,0)`
         })
       }
-
     }).catch((err) => {
       console.log(err)
     })
-
   }
 
   useEffect(() => {
-    console.log('epa projection')
     if (projection) handleResetValues();
     // if (!client) {
     //   setValues({
