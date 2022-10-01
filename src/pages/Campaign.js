@@ -24,6 +24,7 @@ import {
 } from '../sections/@dashboard/campaign';
 // api
 import { index, show, clientInCampaign } from '../utils/api/campaign'
+import CreateCampaign from './CreateCampaign'
 // ----------------------------------------------------------------------
 
 export default function Campaign() {
@@ -163,7 +164,7 @@ export default function Campaign() {
   // crear campaña
   if (id === "add") {
     return (
-      'todo'
+      <CreateCampaign />
     )
   }
 

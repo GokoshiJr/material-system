@@ -2,6 +2,38 @@ import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
+async function store(token, campaign) {
+  try {
+    const res = await axios({
+      headers: {"x-access-token": token},
+      url: `${API_URL}/campaign`,
+      method: 'POST',
+      data: campaign
+    })
+    return res;
+  } catch (err) {
+    console.log(err)
+    return null;
+  }
+}
+// return campaign types
+async function getCampaignTypes(token, clientId) {
+  try {
+    const res = await axios({
+      headers: {"x-access-token": token},
+      url: `${API_URL}/campaign/campaignTypes`,
+      method: 'GET'
+    })
+    return res;
+  } catch (err) {
+    console.log(err)
+    if (err.response.status === 401) {
+      console.log('logout')
+    }
+    return null;
+  }
+}
+
 // return client by campaign id
 async function clientCampaigns(token, clientId) {
   try {
@@ -81,6 +113,8 @@ async function show(token, id) {
 }
 
 export {
+  store,
+  getCampaignTypes,
   clientCampaigns,
   updateBalanceInProjection,
   clientInCampaign,

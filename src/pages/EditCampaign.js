@@ -4,7 +4,8 @@ import { styled } from '@mui/material/styles';
 import {
   Container,
   Typography,
-  Stack
+  Stack,
+  Button
 } from '@mui/material';
 // components
 import Page from '../components/Page';
@@ -65,21 +66,34 @@ export default function Register({
             <CampaignEditForm
               campaign={campaign}
             />
-            <Stack
-              direction="row"
-              alignItems="center"
-              justifyContent="space-between"
-              mt={5}
-              mb={5}
-            >
+            {projection === null
+              ? 
+              <>
               <Typography variant="h4" gutterBottom>
-                Proyección
+                Esta campaña no está asignada a un cliente
               </Typography>
-            </Stack>
-            <ProjectionEditForm
-              projection={projection}
-              showClientInCampaign={showClientInCampaign}
-            />
+              <Button>Redirigir a projection</Button>
+              </>
+              : 
+
+              <>
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  mt={5}
+                  mb={5}
+                >
+                  <Typography variant="h4" gutterBottom>
+                    Proyección
+                  </Typography>
+                </Stack>
+                <ProjectionEditForm
+                  projection={projection}
+                  showClientInCampaign={showClientInCampaign}
+                />
+              </>
+            }
           </ContentStyle>
         </Container>
       </RootStyle>

@@ -60,7 +60,10 @@ export default function ProjectionEditForm({
     resetForm
   } = formik;
 
-  const balance = projection.balances.map((balance, index) =>    
+  let balance = []
+
+  if (projection) {
+    balance = projection.balances.map((balance, index) =>    
     <ListItem disablePadding key={index} sx={{ 
       mt: 2,
       borderRadius: '10px', 
@@ -72,6 +75,8 @@ export default function ProjectionEditForm({
       </ListItemButton>
     </ListItem>
   )
+  }
+  
 
   const handleResetValues = () => {
     setValues({
@@ -177,7 +182,8 @@ export default function ProjectionEditForm({
   }, [projection])
 
   return (
-    <FormikProvider value={formik}>
+  
+<FormikProvider value={formik}>
       <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
         <Stack spacing={3}>
           <TextField
@@ -238,5 +244,7 @@ export default function ProjectionEditForm({
         </Stack>
       </Form>
     </FormikProvider>
+  
+    
   );
 }
