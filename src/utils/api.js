@@ -2,6 +2,22 @@ import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
+// create projection
+async function createProjection(token, projection) {
+  try {
+    const res = await axios({
+      headers: {"x-access-token": token},
+      url: `${API_URL}/projection`,
+      method: 'POST',
+      data: projection
+    });
+    return { title: res.data.status, icon: 'success' };
+  } catch (err) {
+    console.log(err)
+    return { title: err.response.statusText, icon: 'error' }
+  }
+}
+
 /* actualiza un empleado */
 async function updateClient(token, id, client) {
   try {
@@ -201,6 +217,7 @@ async function getUsers(token) {
 
 
 export {
+  createProjection,
   updateClient,
   showClient,
   createClient,

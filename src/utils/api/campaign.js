@@ -2,6 +2,19 @@ import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
+async function getCampaignUnasigned(token) {
+  try {
+    const res = await axios({
+      headers: {"x-access-token": token},
+      url: `${API_URL}/campaign/unasigned`,
+      method: 'GET'
+    })
+    return res;
+  } catch (err) {
+    return null;
+  }
+}
+
 async function store(token, campaign) {
   try {
     const res = await axios({
@@ -113,6 +126,7 @@ async function show(token, id) {
 }
 
 export {
+  getCampaignUnasigned,
   store,
   getCampaignTypes,
   clientCampaigns,
