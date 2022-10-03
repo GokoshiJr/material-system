@@ -27,10 +27,6 @@ export default function CampaignList({ campaigns, ...other }) {
     return url
   }
 
-  useEffect(() => {
-    getImage()
-  }, [])
-
   return (
     <Grid container spacing={3} {...other}>
       {campaigns.map((campaign) => (
