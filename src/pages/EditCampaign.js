@@ -1,11 +1,13 @@
 import PropTypes from 'prop-types';
+import { Link as RouterLink } from 'react-router-dom';
 // @mui
 import { styled } from '@mui/material/styles';
 import {
   Container,
   Typography,
   Stack,
-  Button
+  Button,
+  Box
 } from '@mui/material';
 // components
 import Page from '../components/Page';
@@ -66,16 +68,16 @@ export default function Register({
             <CampaignEditForm
               campaign={campaign}
             />
-            {projection === null
-              ? 
-              <>
-              <Typography variant="h4" gutterBottom>
-                Esta campaña no está asignada a un cliente
-              </Typography>
-              <Button>Redirigir a projection</Button>
-              </>
-              : 
-
+            {(projection === null || projection.link === 'Cargando...')
+              ?
+              <Box sx={{ width: '100%', mt: 4 }} textAlign="center">                
+                <Typography variant="h6" gutterBottom textAlign="center" sx={{ mb: 3 }}>
+                  ¡Esta campaña no está asignada a un cliente!
+                </Typography>
+                <Button component={RouterLink} to={`/dashboard/projection/${campaign._id}`}
+                  variant="outlined" size="small">Crear Proyección</Button>
+              </Box>
+              :
               <>
                 <Stack
                   direction="row"
