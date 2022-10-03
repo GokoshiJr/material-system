@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { Link as RouterLink, useParams } from 'react-router-dom';
+import { useFormik, Form, FormikProvider } from 'formik';
 // material
 import {
   Container,
@@ -10,7 +11,12 @@ import {
   Card,
   CardHeader,
   Grid,
-  CardContent
+  CardContent,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField
 } from '@mui/material';
 import Iconify from '../components/Iconify';
 // context
@@ -23,7 +29,7 @@ import {
   CampaignToolbar
 } from '../sections/@dashboard/campaign';
 // api
-import { index, show, clientInCampaign } from '../utils/api/campaign'
+import { index, show, clientInCampaign, getCampaignUnasigned } from '../utils/api/campaign'
 import CreateCampaign from './CreateCampaign'
 // ----------------------------------------------------------------------
 
@@ -32,9 +38,11 @@ export default function Campaign() {
 
   const { id } = useParams();
 
-  const [campaigns, setCampaigns] = useState([])
+  const [campaigns, setCampaigns] = useState([]) // array original
 
   const [isLoading, setIsLoading] = useState(true)
+
+  const [campaignSelectedArray, setCampaignSelectedArray] = useState([])
 
   const [showCampaign, setShowCampaign] = useState({
     name: 'Cargando...',
@@ -63,10 +71,26 @@ export default function Campaign() {
     clientId: 'Cargando...'
   })
 
+  const formik = useFormik({
+    initialValues: {
+      campaignFilter: '',
+    }
+  });
+
+  const {
+    getFieldProps,
+    values,
+    setValues,
+    errors,
+    touched,
+    resetForm
+  } = formik;
+
   const getCampaigns = async () => {
     const { data } = await index(auth.token);
     setCampaigns(data);
-    setIsLoading(false)
+    setCampaignSelectedArray(data);
+    setIsLoading(false);
   }
 
   const showCamp = async () => {
@@ -79,6 +103,38 @@ export default function Campaign() {
     // retorna la campaña por su id
     const { data } = await clientInCampaign(auth.token, id);
     setProjection(data);
+  }
+
+  const _getCampaignUnasigned = async () => {
+    setIsLoading(true)
+    const { data } = await getCampaignUnasigned(auth.token)
+    setCampaignSelectedArray(data)
+    setIsLoading(false)
+  }
+
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setValues({...formik.values, [name]: value});
+    console.log(value)
+    if (value === 'all') {
+      setCampaignSelectedArray(campaigns)
+    }
+    if (value === 'on') {
+      setCampaignSelectedArray(campaigns.filter((el) => el.campaignState === 'on'))
+    }
+    if (value === 'paused') {
+      setCampaignSelectedArray(campaigns.filter((el) => el.campaignState === 'paused'))
+    }
+    if (value === 'finalized') {
+      setCampaignSelectedArray(campaigns.filter((el) => el.campaignState === 'finalized'))
+    }
+    if (value === 'unasigned') {
+      
+      _getCampaignUnasigned()
+      
+      
+    }
   }
 
   useEffect(() => {
@@ -128,11 +184,31 @@ export default function Campaign() {
             <Button variant="contained" component={RouterLink} to="add" startIcon={<Iconify icon="eva:plus-fill" />}>
               Crear Campaña
             </Button>
-            <CampaignToolbar />
+            <CampaignToolbar />            
+          
+            <FormControl sx={{ minWidth: 200 }}>
+              <InputLabel id="campaignFilter">Filtrar campañas</InputLabel>
+              <Select
+                name='campaignFilter'
+                labelId='campaignFilter'
+                id='campaignFilter'
+                {...getFieldProps('campaignFilter')}
+                label="Publicación de Posts"
+                onChange={handleChange}
+              >
+                <MenuItem value={'all'}>Todas</MenuItem>                
+                <MenuItem value={'on'}>Activas</MenuItem>
+                <MenuItem value={'paused'}>Pausadas</MenuItem>
+                <MenuItem value={'finalized'}>Finalizadas</MenuItem>
+                <MenuItem value={'unasigned'}>Sin Asignar</MenuItem>
+              </Select>
+            </FormControl>
+
+
           </Stack>
           {!isLoading
             ?
-            <CampaignList campaigns={campaigns} />
+            <CampaignList campaigns={campaignSelectedArray} />
             :
             <Grid container spacing={3}>
               {[0,1,2,3].map((el, index) => (
