@@ -2,6 +2,37 @@ import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
+/* actualiza un usuario */
+async function updateUser(token, id, user) {
+  try {
+    const res = await axios({
+      headers: {"x-access-token": token},
+      url: `${API_URL}/user/${id}`,
+      method: 'PUT',
+      data: user
+    })
+    return { title: res.data.status, icon: 'success' };
+  } catch (err) {
+    console.log(err)
+    return { title: err.response.statusText, icon: 'error' } ;
+  }
+}
+
+// create projection
+async function clientStadistic(token, clientId) {
+  try {
+    const res = await axios({
+      headers: {"x-access-token": token},
+      url: `${API_URL}/client/clientStadistic/${clientId}`,
+      method: 'GET'
+    });
+    return { res };
+  } catch (err) {
+    console.log(err)
+    return { title: err.response.statusText, icon: 'error' }
+  }
+}
+
 // create projection
 async function createProjection(token, projection) {
   try {
@@ -217,6 +248,8 @@ async function getUsers(token) {
 
 
 export {
+  updateUser,
+  clientStadistic,
   createProjection,
   updateClient,
   showClient,
