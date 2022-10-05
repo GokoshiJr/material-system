@@ -11,6 +11,7 @@ import Iconify from '../../../components/Iconify';
 import { AppContext } from '../../../context/AppContext';
 // api method
 import { eliminateEmployee, updateEmployee } from '../../../utils/api';
+
 // ----------------------------------------------------------------------
 
 UserMoreMenu.propTypes = {
@@ -19,10 +20,10 @@ UserMoreMenu.propTypes = {
   setElements: PropTypes.func,
   updateElement: PropTypes.func,
   eliminateElement: PropTypes.func,
-
   getEmployees: PropTypes.func,
   setUSERLIST: PropTypes.func,
-  accessState: PropTypes.bool
+  accessState: PropTypes.bool,
+  userId: PropTypes.string
 };
 
 export default function UserMoreMenu({
@@ -31,10 +32,10 @@ export default function UserMoreMenu({
   setElements,
   updateElement,
   eliminateElement,
-
   getEmployees,
   setUSERLIST,
-  accessState
+  accessState,
+  userId
 }){
 
   const auth = useContext(AppContext)
@@ -84,14 +85,14 @@ export default function UserMoreMenu({
               if (result.isConfirmed) {
                 await updateElement(
                   auth.token,
-                  elementId,
+                  userId,
                   { accessState: !accessState }
                 );
                 const { data } = await getElements(auth.token);
                 setElements(data);
                 Swal.fire({
                   icon: 'success',
-                  title: 'Acceso actualizado con exito',
+                  title: 'Acceso actualizado con éxito',
                   background: `rgba(210,210,210,1)`,
                   backdrop: `rgba(0,0,0,0)`
                 })
@@ -101,14 +102,13 @@ export default function UserMoreMenu({
               Swal.fire({
                 icon: 'error',
                 title: 'Ocurrió un error',
-                text: `Epa Alex`
+                text: `Error`
               })
               console.log(err)
             })
             setIsOpen(false)
             }}
           >
-
             <ListItemIcon>
               <Iconify icon="eva:lock-outline" width={24} height={24} />
             </ListItemIcon>
@@ -146,7 +146,7 @@ export default function UserMoreMenu({
             Swal.fire({
               icon: 'error',
               title: 'Ocurrió un error',
-              text: `Epa Alex`
+              text: `Error`
             })
             console.log(err)
           })
@@ -161,7 +161,6 @@ export default function UserMoreMenu({
             primaryTypographyProps={{ variant: 'body2' }}
           />
         </MenuItem>
-
       </Menu>
     </>
   );

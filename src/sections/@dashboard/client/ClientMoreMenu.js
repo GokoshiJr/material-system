@@ -65,6 +65,13 @@ export default function ClientMoreMenu({
           <ListItemText primary="Editar" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
 
+        <MenuItem component={RouterLink} to={`/dashboard/stadistic/${elementId}`} sx={{ color: 'text.secondary' }}>
+          <ListItemIcon>
+            <Iconify icon="eva:edit-fill" width={24} height={24} />
+          </ListItemIcon>
+          <ListItemText primary="Estadísticos" primaryTypographyProps={{ variant: 'body2' }} />
+        </MenuItem>
+
         <MenuItem component={RouterLink} to={`/dashboard/induction/${elementId}`} sx={{ color: 'text.secondary' }}>
           <ListItemIcon>
             <Iconify icon="eva:edit-fill" width={24} height={24} />

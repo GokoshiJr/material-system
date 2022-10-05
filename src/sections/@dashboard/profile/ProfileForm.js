@@ -179,7 +179,7 @@ export default function ProfileForm({
             name='email'
             label='Correo'
             {...getFieldProps('email')}
-            inputProps={{readOnly: !editEmployeeMode}}
+            inputProps={{readOnly: true}}
             error={Boolean(touched.email && errors.email)}
             helperText={touched.email && errors.email}
             onChange={handleChange}
