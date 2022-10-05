@@ -30,7 +30,7 @@ import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashbo
 // context
 import { AppContext } from '../context/AppContext';
 // api methods
-import { getEmployees, showEmployee, eliminateEmployee, updateEmployee } from '../utils/api';
+import { getEmployees, showEmployee, eliminateEmployee, updateEmployee, updateUser } from '../utils/api';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -90,7 +90,15 @@ export default function User() {
     userId: 'cargando...'
   })
 
-  const [USERLIST, setUSERLIST] = useState([{_id: '1', name: 'epa Alex'}])
+  const [USERLIST, setUSERLIST] = useState([{
+    _id: '1', 
+    name: 'epa Alex',
+    userId: {
+      accessState: true,
+      roles: [{name: "admin"}]
+    } 
+
+  }])
 
   const [page, setPage] = useState(0);
 
@@ -287,18 +295,26 @@ export default function User() {
                             : 'cargando...'
                           }</TableCell>
                           <TableCell align="left">
-                            <Label variant="ghost" color={accessState ? 'success' : 'error'}>
-                              {accessState ? 'Activo' :'Baneado'}
-                            </Label>
-                          </TableCell>
+                            {userId.accessState !== undefined
+                              ?
+                              <Label variant="ghost" color={userId.accessState ? 'success' : 'error'}>
+                                {userId.accessState ? 'Activo' :'Baneado'}
+                              </Label>
+                              :
+                              <Label variant="ghost" color='success'>
+                                {"Cargando..."}
+                              </Label>
+                            }
+                          </TableCell> 
                           <TableCell align="right">
                             <UserMoreMenu
                               elementId={_id}
                               getElements={getEmployees}
                               setElements={setUSERLIST}
-                              updateElement={updateEmployee}
+                              updateElement={updateUser}
                               eliminateElement={eliminateEmployee}
-                              accessState={accessState}
+                              accessState={userId.accessState}
+                              userId={userId._id}
                             />
                           </TableCell>
                         </TableRow>
