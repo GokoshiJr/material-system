@@ -6,3 +6,4 @@ export { default as CampaignCreateForm } from './CampaignCreateForm';
 export { default as ProjectionEditForm } from './ProjectionEditForm';
 export { default as ProjectionCreateForm } from './ProjectionCreateForm';
 export { default as CampaignTimeline } from './CampaignTimeline';
+export { default as ReportForm } from './ReportForm';

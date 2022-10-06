@@ -329,6 +329,7 @@ export default function Client() {
               page={page}
               onPageChange={handleChangePage}
               onRowsPerPageChange={handleChangeRowsPerPage}
+              labelRowsPerPage={'Filas por página:'}
             />
           </Card>
         </Container>

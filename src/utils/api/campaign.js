@@ -2,6 +2,21 @@ import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
+async function sendReport(token, report) {
+  try {
+    const res = await axios({
+      headers: {"x-access-token": token},
+      url: `${API_URL}/report`,
+      method: 'POST',
+      data: report
+    })
+    return res;
+  } catch (err) {
+    console.log(err)
+    return null;
+  }
+}
+
 async function getCampaignUnasigned(token) {
   try {
     const res = await axios({
@@ -30,7 +45,7 @@ async function store(token, campaign) {
   }
 }
 // return campaign types
-async function getCampaignTypes(token, clientId) {
+async function getCampaignTypes(token) {
   try {
     const res = await axios({
       headers: {"x-access-token": token},
@@ -126,6 +141,7 @@ async function show(token, id) {
 }
 
 export {
+  sendReport,
   getCampaignUnasigned,
   store,
   getCampaignTypes,

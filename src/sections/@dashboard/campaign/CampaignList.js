@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
 // material
 import { Grid } from '@mui/material';
 import CampaignCard from './CampaignCard';

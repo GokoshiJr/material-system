@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link as RouterLink } from 'react-router-dom';
 // @mui
@@ -7,7 +8,10 @@ import {
   Typography,
   Stack,
   Button,
-  Box
+  Box,
+  ButtonGroup,
+  ToggleButton,
+  ToggleButtonGroup
 } from '@mui/material';
 // components
 import Page from '../components/Page';
@@ -50,6 +54,7 @@ export default function Register({
   title,
   showClientInCampaign
 }) {
+
   return (
     <Page title="Campaña">
       <RootStyle>
@@ -64,13 +69,25 @@ export default function Register({
               <Typography variant="h4" gutterBottom>
                 {title} Campaña
               </Typography>
+
+              <Button variant="outlined" size="small">Editar</Button>
+              {projection !== null &&
+                  <Button
+                    variant="outlined" size="small"
+                    component={RouterLink} 
+                    to={`/dashboard/report/${campaign._id}`}
+                  >Crear Reporte</Button>
+              }
+              <Button variant="outlined" size="small">Eliminar </Button>
             </Stack>
+
             <CampaignEditForm
               campaign={campaign}
             />
+
             {(projection === null || projection.link === 'Cargando...')
               ?
-              <Box sx={{ width: '100%', mt: 4 }} textAlign="center">                
+              <Box sx={{ width: '100%', mt: 4 }} textAlign="center">
                 <Typography variant="h6" gutterBottom textAlign="center" sx={{ mb: 3 }}>
                   ¡Esta campaña no está asignada a un cliente!
                 </Typography>

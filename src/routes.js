@@ -19,6 +19,7 @@ import EditCampaign from './pages/EditCampaign';
 import ClientCampaigns from './pages/ClientCampaigns';
 import Projection from './pages/Projection';
 import ClientStadistic from './pages/ClientStadistic';
+import Report from './pages/Report';
 //
 import RequireAuth from './context/RequireAuth';
 import IsLogged from './context/IsLogged';
@@ -35,6 +36,10 @@ export default function Router() {
         </RequireAuth>,
       children: [
         { path: 'app', element: <DashboardApp /> },
+        {
+          path: 'report',
+          children: [{ path: ':id', element: <Report />}]
+        },
         {
           path: 'stadistic',
           children: [{ path: ':id', element: <ClientStadistic />}]

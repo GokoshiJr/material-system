@@ -51,22 +51,17 @@ export default function ProjectionCreateForm({ campaign, clients }) {
     values,
     setValues,
     errors,
-    touched,
-    resetForm
+    touched
   } = formik;
-
-  const handleResetValues = () => {
-    setValues({})
-  }
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setValues({...formik.values, [name]: value});    
+    setValues({...formik.values, [name]: value});
   }
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const res = await createProjection(auth.token, values)
+    await createProjection(auth.token, values)
     Swal.fire({
       icon: "success",
       title: "Proyección creada con éxito",
@@ -76,7 +71,6 @@ export default function ProjectionCreateForm({ campaign, clients }) {
   }
 
   useEffect(() => {
-    console.log(campaign)
     if (campaign) {
       setValues({
         ...values,
@@ -135,7 +129,6 @@ export default function ProjectionCreateForm({ campaign, clients }) {
               {clients.map((el) =>
                 <MenuItem key={el._id} value={el._id}>{el.name}</MenuItem>
               )}
-              
             </Select>
           </FormControl>
           <Button 

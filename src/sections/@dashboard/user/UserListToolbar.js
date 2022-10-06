@@ -1,7 +1,14 @@
 import PropTypes from 'prop-types';
 // material
 import { styled } from '@mui/material/styles';
-import { Toolbar, Tooltip, IconButton, Typography, OutlinedInput, InputAdornment } from '@mui/material';
+import {
+  Toolbar,
+  Tooltip,
+  IconButton,
+  Typography,
+  OutlinedInput,
+  InputAdornment
+} from '@mui/material';
 // component
 import Iconify from '../../../components/Iconify';
 
@@ -34,17 +41,15 @@ UserListToolbar.propTypes = {
   filterName: PropTypes.string,
   onFilterName: PropTypes.func,
   setFilterName: PropTypes.func,
-  selected: PropTypes.array,
   eliminateSelected: PropTypes.func
 };
 
 export default function UserListToolbar({ 
-  numSelected, 
-  filterName, 
-  onFilterName, 
-  setFilterName, 
-  selected,
-  eliminateSelected 
+  numSelected,
+  filterName,
+  onFilterName,
+  setFilterName,
+  eliminateSelected
 }) {
   return (
     <RootStyle
@@ -59,11 +64,11 @@ export default function UserListToolbar({
         <Typography component="div" variant="subtitle1">
           {numSelected} seleccionados
         </Typography>
-      ) : (        
+      ) : (
         <SearchStyle
           value={filterName}
           onChange={onFilterName}
-          placeholder="Search user..."
+          placeholder="Filtrar por nombre"
           startAdornment={
             <InputAdornment position="start">
               <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled', width: 20, height: 20 }} />
@@ -71,7 +76,7 @@ export default function UserListToolbar({
           }
         />
       )}
-      
+
       {numSelected > 0 && 
         <Tooltip title="Eliminar registros">
           <IconButton onClick={eliminateSelected}>
@@ -79,7 +84,7 @@ export default function UserListToolbar({
           </IconButton>
         </Tooltip>
       }
-      
+
       {filterName &&
         <Tooltip title="Limpiar busqueda">
           <IconButton onClick={() => { setFilterName('') }}>

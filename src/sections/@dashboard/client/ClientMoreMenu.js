@@ -9,32 +9,22 @@ import Swal from 'sweetalert2';
 import Iconify from '../../../components/Iconify';
 // context
 import { AppContext } from '../../../context/AppContext';
-// api method
-import { eliminateEmployee, updateEmployee } from '../../../utils/api';
+
+
 // ----------------------------------------------------------------------
 
 ClientMoreMenu.propTypes = {
   elementId: PropTypes.string,
   getElements: PropTypes.func,
   setElements: PropTypes.func,
-  updateElement: PropTypes.func,
-  eliminateElement: PropTypes.func,
-
-  getEmployees: PropTypes.func,
-  setUSERLIST: PropTypes.func,
-  accessState: PropTypes.bool
+  eliminateElement: PropTypes.func
 };
 
 export default function ClientMoreMenu({
   elementId,
   getElements,
   setElements,
-  updateElement,
-  eliminateElement,
-
-  getEmployees,
-  setUSERLIST,
-  accessState
+  eliminateElement
 }){
 
   const auth = useContext(AppContext)
@@ -91,7 +81,7 @@ export default function ClientMoreMenu({
           onClick={() =>
           {
             Swal.fire({
-            title: `¿Desea eliminar este empleado?`,
+            title: `¿Desea eliminar este cliente?`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -108,7 +98,7 @@ export default function ClientMoreMenu({
               setElements(data);
               Swal.fire({
                 icon: 'success',
-                title: 'Empleado eliminado con exito',
+                title: 'Cliente eliminado con éxito',
                 background: `rgba(210,210,210,1)`,
                 backdrop: `rgba(0,0,0,0)`
               })
@@ -117,7 +107,7 @@ export default function ClientMoreMenu({
             Swal.fire({
               icon: 'error',
               title: 'Ocurrió un error',
-              text: `Epa Alex`
+              text: `Error`
             })
             console.log(err)
           })

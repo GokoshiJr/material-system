@@ -34,7 +34,6 @@ UserListToolbar.propTypes = {
   filterName: PropTypes.string,
   onFilterName: PropTypes.func,
   setFilterName: PropTypes.func,
-  selected: PropTypes.array,
   eliminateSelected: PropTypes.func
 };
 
@@ -43,7 +42,6 @@ export default function UserListToolbar({
   filterName, 
   onFilterName, 
   setFilterName, 
-  selected,
   eliminateSelected 
 }) {
   return (

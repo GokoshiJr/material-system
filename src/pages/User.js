@@ -92,12 +92,14 @@ export default function User() {
 
   const [USERLIST, setUSERLIST] = useState([{
     _id: '1', 
-    name: 'epa Alex',
+    name: 'Cargando...',
+    lastName: 'Cargando...',
+    socialId: '20000000',
+    phoneNumber: '+584140000000',
     userId: {
       accessState: true,
-      roles: [{name: "admin"}]
-    } 
-
+      roles: [{name: "user"}]
+    }
   }])
 
   const [page, setPage] = useState(0);
@@ -114,7 +116,6 @@ export default function User() {
 
   const getEmp = async () => {
     const { data } = await getEmployees(auth.token);
-    console.log(data)
     setUSERLIST(data);
   }
 
@@ -126,7 +127,7 @@ export default function User() {
 
   useEffect(() => {
     if (id && id !== "add") showEmp();
-    if (!id) getEmp();
+    if (!id) getEmp(); 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
 
@@ -162,7 +163,7 @@ export default function User() {
       Swal.fire({
         icon: 'error',
         title: 'Ocurrió un error',
-        text: `Epa Alex`
+        text: `Error`
       })
     })
   }
@@ -346,6 +347,7 @@ export default function User() {
               page={page}
               onPageChange={handleChangePage}
               onRowsPerPageChange={handleChangeRowsPerPage}
+              labelRowsPerPage={'Filas por página:'}
             />
           </Card>
         </Container>

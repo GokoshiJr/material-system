@@ -10,7 +10,6 @@ import Iconify from '../../../components/Iconify';
 // context
 import { AppContext } from '../../../context/AppContext';
 // api method
-import { eliminateEmployee, updateEmployee } from '../../../utils/api';
 
 // ----------------------------------------------------------------------
 
@@ -20,8 +19,6 @@ UserMoreMenu.propTypes = {
   setElements: PropTypes.func,
   updateElement: PropTypes.func,
   eliminateElement: PropTypes.func,
-  getEmployees: PropTypes.func,
-  setUSERLIST: PropTypes.func,
   accessState: PropTypes.bool,
   userId: PropTypes.string
 };
@@ -32,8 +29,6 @@ export default function UserMoreMenu({
   setElements,
   updateElement,
   eliminateElement,
-  getEmployees,
-  setUSERLIST,
   accessState,
   userId
 }){

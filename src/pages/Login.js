@@ -63,7 +63,6 @@ export default function Login() {
   return (
     <Page title="Login">
       <RootStyle>
-
         <HeaderStyle>
           {mdUp && (
             <Logo />
@@ -81,7 +80,7 @@ export default function Login() {
         {mdUp && (
           <SectionStyle>
             <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-              Hi, Welcome Back
+              Hola, Bienvenido de vuelta
             </Typography>
             <img src="/static/illustrations/illustration_login.png" alt="login" />
           </SectionStyle>
@@ -91,11 +90,11 @@ export default function Login() {
           <ContentStyle>
 
             <Typography variant="h4" gutterBottom>
-              Sign in to Iventium
+              Ingresar a Iventium
             </Typography>
 
             <Typography sx={{ color: 'text.secondary', mb: 5 }}>
-              Enter your details below.
+              Ingrese sus credenciales a continuación
             </Typography>
 
             <LoginForm />

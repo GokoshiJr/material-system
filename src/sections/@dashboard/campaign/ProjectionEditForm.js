@@ -53,11 +53,9 @@ export default function ProjectionEditForm({
 
   const {
     getFieldProps,
-    values,
     setValues,
     errors,
     touched,
-    resetForm
   } = formik;
 
   let balance = []
@@ -96,37 +94,6 @@ export default function ProjectionEditForm({
     // if (!client) setShowCreateButton(true);
   }
 
-  /* create client */
-  const handleCleanValues = () => {
-    // resetForm()
-    // setValues({
-    //   name: '',
-    //   lastName: '',
-    //   email: '',
-    //   phoneNumber: '',
-    //   userAccount: '',
-    //   password: '',
-    //   socialPlatform: '',
-    //   associated: ''
-    // })
-  }
-
-  const handleSubmit = async (event) => {
-    // event.preventDefault();
-    // const errorsCount = Object.keys(errors)
-    // if (errorsCount.length === 0) {
-    //   console.log('create client')
-    //   const res = await createClient(auth.token, values);
-    //   Swal.fire({
-    //     icon: res.icon,
-    //     title: res.title,
-    //     background: `rgba(210,210,210,1)`,
-    //     backdrop: `rgba(0,0,0,0)`
-    //   })
-    //   handleCleanValues()
-    // }
-  }
-
   const handleAddBalance = async () => {
     const balanceArray = projection.balances.map((balance) => balance)
     Swal.fire({
@@ -147,7 +114,7 @@ export default function ProjectionEditForm({
           balanceArray)
       },
       allowOutsideClick: () => !Swal.isLoading()
-    }).then((res, err) => {
+    }).then((res) => {
       showClientInCampaign()
       if (res.isConfirmed) {
         Swal.fire({
@@ -184,7 +151,7 @@ export default function ProjectionEditForm({
   return (
   
 <FormikProvider value={formik}>
-      <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
+      <Form autoComplete="off" noValidate>
         <Stack spacing={3}>
           <TextField
             fullWidth

@@ -1,16 +1,14 @@
 import PropTypes from 'prop-types';
 import { useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+
 import { useFormik, Form, FormikProvider } from 'formik';
 import * as Yup from 'yup';
 // material
-import { Stack, TextField, Button } from '@mui/material';
+import { Stack, TextField } from '@mui/material';
 // sweetalert2
 import Swal from 'sweetalert2';
 // context
 import { AppContext } from '../../../context/AppContext';
-// api method
-import { updateClient, showClient, createClient } from '../../../utils/api';
 
 // ----------------------------------------------------------------------
 

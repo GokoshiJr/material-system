@@ -167,23 +167,7 @@ export default function CampaignCreateForm() {
       background: `rgba(210,210,210,1)`,
       backdrop: `rgba(0,0,0,0)`
     })
-
-    console.log(campaign)
-    // handleCleanValues()
-
-
-    // const errorsCount = Object.keys(errors)
-    // if (errorsCount.length === 0) {
-    //   console.log('create client')
-    //   const res = await createClient(auth.token, values);
-    //   Swal.fire({
-    //     icon: res.icon,
-    //     title: res.title,
-    //     background: `rgba(210,210,210,1)`,
-    //     backdrop: `rgba(0,0,0,0)`
-    //   })
-    //   handleCleanValues()
-    // }
+    handleCleanValues() 
   }
 
   const _getCampaignTypes = async () => {
@@ -197,9 +181,7 @@ export default function CampaignCreateForm() {
   }
 
   const handleAddPromoteLink = async () => {
-    console.log(link)
     values.promotePostLink.push(link)
-    console.log(values.promotePostLink)
     setLink('')
   }
 
@@ -357,7 +339,7 @@ export default function CampaignCreateForm() {
           <TextField
             fullWidth
             name='linkAPI'
-            label='Link de la API'
+            label='Link de la API (Opcional)'
             {...getFieldProps('linkAPI')}
             inputProps={{readOnly: !true}}
             error={Boolean(touched.linkAPI && errors.linkAPI)}

@@ -1,20 +1,25 @@
-import { Link as RouterLink, useParams } from 'react-router-dom';
-import { useContext, useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { useParams } from 'react-router-dom';
 // @mui
 import { styled } from '@mui/material/styles';
 import {
   Container,
   Typography,
-  Stack
+  Stack,
+  Button,
+  Box,
+  ButtonGroup
 } from '@mui/material';
+// context
+import { AppContext } from '../context/AppContext';
 // components
 import Page from '../components/Page';
+// api method
+import { show, clientInCampaign } from '../utils/api/campaign'
 // sections
-import { ProjectionCreateForm } from '../sections/@dashboard/campaign';
-// context
-import { AppContext } from '../context/AppContext'
-import { show } from '../utils/api/campaign'
-import { getClients } from '../utils/api'
+
+import ReportForm from '../sections/@dashboard/campaign/ReportForm';
+
 // ----------------------------------------------------------------------
 
 const RootStyle = styled('div')(({ theme }) => ({
@@ -35,36 +40,42 @@ const ContentStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function Projection() {  
-  const auth = useContext(AppContext)
+export default function Report() {
+  const auth = useContext(AppContext);
 
   const { id } = useParams();
 
-  const [campaign, setCampaign] = useState({
-    _id: 'Cargando...',
-    name: 'Cargando...'
+  const [projection, setProjection] = useState({
+    balances: [-1,-2,3]
   })
 
-  const [clients, setClients] = useState([{_id: ''}])
+  const [campaign, setCampaign] = useState({
+    _id: 'Cargando...',
+    promotePostLink: ['Cargando...'],
+    perDayBudget: 1,
+    promotionDuration: 1
+  })
 
-  const _getCampaign = async () => {
-    const { data } = await show(auth.token, id)
-    setCampaign(data)
+  const getProjection = async () => {
+    // retorna la campaña por su id
+    const { data } = await clientInCampaign(auth.token, id);
+    setProjection(data);
   }
 
-  const _getClients = async () => {
-    const { data } = await getClients(auth.token)
-    setClients(data)
+  const getCampaign = async () => {
+    // retorna la campaña por su id
+    const { data } = await show(auth.token, id);
+    setCampaign(data);
   }
 
   useEffect(() => {
-    _getCampaign()
-    _getClients()
+    getProjection()
+    getCampaign()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [id])
 
   return (
-    <Page title="Proyeccion">
+    <Page title="Reporte de Campaña">
       <RootStyle>
         <Container>
           <ContentStyle>
@@ -75,12 +86,12 @@ export default function Projection() {
               mb={5}
             >
               <Typography variant="h4" gutterBottom>
-                Crear Proyección
+                Reporte de Campaña
               </Typography>
             </Stack>
-            <ProjectionCreateForm 
+            <ReportForm
               campaign={campaign}
-              clients={clients}
+              projection={projection}
             />
           </ContentStyle>
         </Container>

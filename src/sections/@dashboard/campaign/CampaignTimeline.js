@@ -19,7 +19,7 @@ import { alpha, styled } from '@mui/material/styles';
 
 import SimpleBarReact from 'simplebar-react';
 import Iconify from '../../../components/Iconify';
-import Scrollbar from '../../../components/Scrollbar';
+
 // utils
 import { fDateTime } from '../../../utils/formatTime';
 
@@ -107,6 +107,7 @@ OrderItem.propTypes = {
     time: PropTypes.instanceOf(Date),
     title: PropTypes.string,
     type: PropTypes.string,
+    id: PropTypes.string,
   }),
 };
 

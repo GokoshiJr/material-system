@@ -112,11 +112,9 @@ export default function Campaign() {
     setIsLoading(false)
   }
 
-
   const handleChange = (event) => {
     const { name, value } = event.target;
     setValues({...formik.values, [name]: value});
-    console.log(value)
     if (value === 'all') {
       setCampaignSelectedArray(campaigns)
     }
@@ -130,10 +128,7 @@ export default function Campaign() {
       setCampaignSelectedArray(campaigns.filter((el) => el.campaignState === 'finalized'))
     }
     if (value === 'unasigned') {
-      
       _getCampaignUnasigned()
-      
-      
     }
   }
 
@@ -184,8 +179,6 @@ export default function Campaign() {
             <Button variant="contained" component={RouterLink} to="add" startIcon={<Iconify icon="eva:plus-fill" />}>
               Crear Campaña
             </Button>
-            <CampaignToolbar />            
-          
             <FormControl sx={{ minWidth: 200 }}>
               <InputLabel id="campaignFilter">Filtrar campañas</InputLabel>
               <Select
