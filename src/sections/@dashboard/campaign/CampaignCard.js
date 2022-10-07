@@ -4,10 +4,10 @@ import { Link as RouterLink } from 'react-router-dom';
 import { Box, Card, Link, Typography, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
 // utils
-import { fCurrency } from '../../../utils/formatNumber';
+
 // components
 import Label from '../../../components/Label';
-import { ColorPreview } from '../../../components/color-utils';
+
 
 // ----------------------------------------------------------------------
 
@@ -29,31 +29,19 @@ CampaignCard.propTypes = {
 export default function CampaignCard({ campaign, image }) {
   const {
     _id,
-    name, 
-    isPost,
-    isVideo,
+    name,
     campaignTypeId,
-    campaignState,
-    promotedPostLink,
-    linkAPI,
-    ubication,
-    demographicsDataSegmentation,
-    interestSegmentation,
-    behaviorSegmentation,
-    audienceAge,
-    audienceGender,
-    perDayBudget,
-    promotionDuration
+    campaignState
   } = campaign;
 
   return (
     <Card>
       <Box sx={{ pt: '100%', position: 'relative' }}>
-      {/*
-        {status && (
+        {campaignState && (
           <Label
             variant="filled"
-            color={(status === 'sale' && 'error') || 'info'}
+            color={(campaignState === 'finalized' && 'error') || 
+            (campaignState === 'paused' && 'warning') || 'info'}
             sx={{
               zIndex: 9,
               top: 16,
@@ -62,17 +50,16 @@ export default function CampaignCard({ campaign, image }) {
               textTransform: 'uppercase',
             }}
           >
-            {status}
+            {campaignState}
           </Label>
         )}
-          */}
           <ProductImgStyle alt={'name'} src={image} />
       </Box>
 
       <Stack spacing={2} sx={{ p: 3 }}>
         <Link to={`/dashboard/campaign/${_id}`} color="inherit" underline="hover" component={RouterLink}>
           <Typography variant="subtitle2" noWrap>
-            {name}
+            {name} 
           </Typography>
         </Link>
 
