@@ -5,6 +5,9 @@ import { useFormik, Form, FormikProvider } from 'formik';
 import * as Yup from 'yup';
 // material
 import { Stack, TextField, Button } from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 // sweetalert2
 import Swal from 'sweetalert2';
 // context
@@ -25,16 +28,20 @@ export default function ProfileForm({
   editEmployeeMode,
   setEmployee
 }) {
-
   const { id } = useParams();
+
   const auth = useContext(AppContext);
+
   const [showUpdateButton, setShowUpdateButton] = useState(false);
+
   const [showCreateButton, setShowCreateButton] = useState(false);
+
+  const [initDate, setInitDate] = useState(Date.now())
 
   const ProfileFormSchema = Yup.object().shape({
     email:
       Yup.string()
-      .email('Ingresa un correo valido')
+      .email('Ingresa un correo válido')
       .required('El correo es requerido'),
     name: Yup.string()
       .min(2, '¡Muy corto!').max(30, '¡Muy largo!')
@@ -43,12 +50,11 @@ export default function ProfileForm({
       .min(2, '¡Muy corto!').max(30, '¡Muy largo!')
       .required('El apellido es requerido'),
     phoneNumber: Yup.string()
-      .min(12, '¡Muy corto!').max(14, '¡Muy largo!')
-      .required('El telefono es requerido'),
+      .min(12, '¡Muy corto!').max(20, '¡Muy largo!')
+      .required('El teléfono es requerido'),
     socialId: Yup.string()
       .min(8, '¡Muy corto!').max(10, '¡Muy largo!')
-      .required('La cedula es requerida')
-
+      .required('La cédula es requerida')
   });
 
   const formik = useFormik({
@@ -57,8 +63,7 @@ export default function ProfileForm({
       name: 'Cargando...',
       lastName: 'Cargando...',
       phoneNumber: 'Cargando...',
-      socialId: 'Cargando...',
-      birthDate: 'Cargando...'
+      socialId: 'Cargando...'
     },
     validationSchema: ProfileFormSchema
   });
@@ -79,8 +84,13 @@ export default function ProfileForm({
     if (id === auth.loggedEmployee._id) auth.setLoggedEmployee(data)
   }
 
+  const handleChangeInitDate = (newValue) => {
+    setInitDate(newValue);
+    if (employee) setShowUpdateButton(true);
+    if (!employee) setShowCreateButton(true);
+  }
   const handleUpdateEmployee = async () => {
-    const res = await updateEmployee(auth.token, id, values);
+    const res = await updateEmployee(auth.token, id, {...values, birthDate: initDate});
     // actualiza el empleado del state
     showEmp()
     Swal.fire({
@@ -89,18 +99,20 @@ export default function ProfileForm({
       background: `rgba(210,210,210,1)`,
       backdrop: `rgba(0,0,0,0)`
     })
+    window.location.href = '/dashboard/user';
   }
 
   const handleResetValues = () => {
-    const birthDate = new Date();
+    // const birthDate = new Date();
     setValues({
       email: employee.userId,
       name: employee.name,
       lastName: employee.lastName,
       phoneNumber: employee.phoneNumber,
-      socialId: employee.socialId,
-      birthDate /*: employee.birthDate birthDate.toLocaleDateString() */
+      socialId: employee.socialId
     })
+    if (employee.birthDate) setInitDate(new Date(employee.birthDate))
+    if (!employee.birthDate) setInitDate(Date.now())
     setShowUpdateButton(false)
   }
 
@@ -119,8 +131,7 @@ export default function ProfileForm({
       name: '',
       lastName: '',
       phoneNumber: '',
-      socialId: '',
-      birthDate: ''
+      socialId: ''
     })
   }
 
@@ -128,8 +139,10 @@ export default function ProfileForm({
     event.preventDefault();
     const errorsCount = Object.keys(errors)
     if (errorsCount.length === 0) {
-      console.log('create employee')
-      const res = await createEmployee(auth.token, values);
+      const res = await createEmployee(auth.token, {
+        ...values,
+        birthDate: initDate
+      });
       Swal.fire({
         icon: res.icon,
         title: res.title,
@@ -140,35 +153,19 @@ export default function ProfileForm({
     }
   }
 
-
-
   useEffect(() => {
-    if (employee) {
-      /* const birthDate = new Date(employee.birthDate);
-      setValues({
-        email: employee.userId,
-        name: employee.name,
-        lastName: employee.lastName,
-        phoneNumber: employee.phoneNumber,
-        socialId: employee.socialId,
-        birthDate:  birthDate.toLocaleDateString()
-      }) */
-      handleResetValues()
-    }
+    if (employee) handleResetValues()
     if (!employee) {
       setValues({
         email: '',
         name: '',
         lastName: '',
         phoneNumber: '',
-        socialId: '',
-        birthDate: ''
+        socialId: ''
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [employee, setValues])
-
-
 
   return (
     <FormikProvider value={formik}>
@@ -206,14 +203,19 @@ export default function ProfileForm({
               onChange={handleChange}
             />
           </Stack>
-          <TextField
-            fullWidth
-            name='birthDate'
-            label='Fecha de Nacimiento'
-            {...getFieldProps('birthDate')}
-            inputProps={{readOnly: !editEmployeeMode}}
-            onChange={handleChange}
-          />
+
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DesktopDatePicker
+              label="Fecha de nacimiento"
+              inputFormat="dd/MM/yyyy"
+              readOnly={!editEmployeeMode}
+              value={initDate}
+              name='initDate'
+              onChange={handleChangeInitDate}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </LocalizationProvider>
+
           <TextField
             fullWidth
             name='phoneNumber'
