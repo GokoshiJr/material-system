@@ -70,15 +70,15 @@ export default function DashboardApp() {
     const a = pred.res.data
     setTest(a.test)
     setPredData(a.prediction)
-    console.log(a)
-    console.log(test)
+    // console.log(a)
+    // console.log(test)
   }
 
   const getStad = async () => {
     const res = await stadisticsCampaign(auth.token)
     setStads(res.res.data);
-    console.log(res.res.data)
-	  console.log('epa Alex')
+    // console.log(res.res.data)
+	  // console.log('epa Alex')
 
   }
 

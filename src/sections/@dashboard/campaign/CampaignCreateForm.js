@@ -1,6 +1,6 @@
-import PropTypes from 'prop-types';
+
 import { useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+
 import { useFormik, Form, FormikProvider } from 'formik';
 import * as Yup from 'yup';
 // material
@@ -12,8 +12,7 @@ import {
   MenuItem,
   InputLabel,
   FormControl,
-  Box,
-  List,
+
   ListItem,
   ListItemButton,
   ListItemText
@@ -21,7 +20,7 @@ import {
 // sweetalert2
 import Swal from 'sweetalert2';
 // date-fns
-import fns from 'date-fns'
+import { differenceInDays } from 'date-fns'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -69,6 +68,8 @@ export default function CampaignCreateForm() {
 
   const [link, setLink] = useState('')
 
+  const [isLinkError, setIsLinkError] = useState(false)
+
   const CampaignEditFormSchema = Yup.object().shape({
     name: Yup.string()
       .min(2, '¡Muy corto!').max(30, '¡Muy largo!')
@@ -77,11 +78,13 @@ export default function CampaignCreateForm() {
       .required('El nombre es requerido'),
     ageTop: Yup.number()
       .required('El nombre es requerido'),
+    
 
   });
 
   const formik = useFormik({
     initialValues: {
+      
       name: '',
       isPost: '',
       isVideo: '',
@@ -107,7 +110,8 @@ export default function CampaignCreateForm() {
     setValues,
     errors,
     touched,
-    resetForm
+    resetForm,
+    setErrors
   } = formik;
 
   const handleCleanValues = () => {
@@ -155,7 +159,7 @@ export default function CampaignCreateForm() {
       finalDate,
       audienceAge: [Number(values.ageFloor), Number(values.ageTop)],
       perDayBudget: Number(values.perDayBudget),
-      promotionDuration: Number(values.promotionDuration),
+      promotionDuration: differenceInDays(finalDate, initDate),
       isPost: Boolean(values.isPost),
       isVideo: Boolean(values.isVideo)
     }
@@ -163,7 +167,7 @@ export default function CampaignCreateForm() {
     const res = await store(auth.token, campaign)
     Swal.fire({
       icon: 'success',
-      title: 'Campaña creada con exito',
+      title: 'Campaña creada con éxito',
       background: `rgba(210,210,210,1)`,
       backdrop: `rgba(0,0,0,0)`
     })
@@ -181,8 +185,14 @@ export default function CampaignCreateForm() {
   }
 
   const handleAddPromoteLink = async () => {
-    values.promotePostLink.push(link)
-    setLink('')
+    if (link.length > 4) {
+      setIsLinkError(false)
+      values.promotePostLink.push(link)
+      setLink('')
+    }
+    else {
+      setIsLinkError(true)
+    }
   }
 
   const linkList = values.promotePostLink.map((el, index) => 
@@ -298,11 +308,11 @@ export default function CampaignCreateForm() {
               label='Links de promocion'
               value={link}
               inputProps={{readOnly: !true}}
-              error={Boolean(touched.name && errors.name)}
-              helperText={touched.name && errors.name}
+              error={Boolean(isLinkError && 'errors.linkError')}
+              helperText={isLinkError && 'Ingrese un link valido'}
               onChange={handleLink}
             />
-            <Button variant="contained" color="error" onClick={handleAddPromoteLink}>
+            <Button variant="contained" color="primary" onClick={handleAddPromoteLink}>
               Añadir
             </Button>
           </Stack>
@@ -418,26 +428,24 @@ export default function CampaignCreateForm() {
               onChange={handleChange}
             />
           </Stack>
-
-          <FormControl fullWidth>
-            <InputLabel id="audienceGender-label">Género de la audiencia</InputLabel>
-            <Select
-              name='audienceGender'
-              labelId="audienceGender-label"
-              id="audienceGender"
-              {...getFieldProps('audienceGender')}
-              label="Género de la audiencia"
-              onChange={handleChange}
-            >
-              {audienceGenderArray.map((el, index) => 
-                <MenuItem key={index} value={el}>{el}</MenuItem>
-              )}
-            </Select>
-          </FormControl>
           
-          
-
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+            <FormControl fullWidth>
+              <InputLabel id="audienceGender-label">Género de la audiencia</InputLabel>
+              <Select
+                name='audienceGender'
+                labelId="audienceGender-label"
+                id="audienceGender"
+                {...getFieldProps('audienceGender')}
+                label="Género de la audiencia"
+                onChange={handleChange}
+              >
+                {audienceGenderArray.map((el, index) => 
+                  <MenuItem key={index} value={el}>{el}</MenuItem>
+                )}
+              </Select>
+            </FormControl>
+
             <TextField
               type='number'
               fullWidth
@@ -449,18 +457,8 @@ export default function CampaignCreateForm() {
               helperText={touched.perDayBudget && errors.perDayBudget}
               onChange={handleChange}
             />
-            <TextField
-              fullWidth
-              name='promotionDuration'
-              label='Duracion de la campaña (días)'
-              {...getFieldProps('promotionDuration')}
-              inputProps={{readOnly: !true}}
-              error={Boolean(touched.promotionDuration && errors.promotionDuration)}
-              helperText={touched.promotionDuration && errors.promotionDuration}
-              onChange={handleChange}
-            />
           </Stack> 
-          <Button variant="contained" color="error" onClick={handleSubmit}>
+          <Button variant="contained" color="primary" onClick={handleSubmit}>
             Registrar Campaña
           </Button>
         </Stack>

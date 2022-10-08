@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { useFormik, Form, FormikProvider } from 'formik';
 import * as Yup from 'yup';
 // material
-import { Stack, TextField, Button } from '@mui/material';
+import { Stack, TextField, Button, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 // sweetalert2
 import Swal from 'sweetalert2';
 // context
@@ -43,6 +43,8 @@ export default function ClientForm({
       .required('El correo es requerido'),
     phoneNumber: Yup.string()
       .required('El telefono es requerido'),
+    socialPlatform:Yup.string()
+      .required('La plataforma en requerida')
   });
 
   const formik = useFormik({
@@ -53,8 +55,7 @@ export default function ClientForm({
       phoneNumber: 'Cargando...',
       userAccount: 'Cargando...',
       password: 'Cargando...',
-      socialPlatform: 'Cargando...',
-      associated: 'Cargando...'
+      socialPlatform: 'Cargando...'
     },
     validationSchema: ClientFormSchema
   });
@@ -94,7 +95,6 @@ export default function ClientForm({
       userAccount: client.userAccount,
       password: client.password,
       socialPlatform: client.socialPlatform,
-      associated: true
     })
     setShowUpdateButton(false)
   }
@@ -116,8 +116,7 @@ export default function ClientForm({
       phoneNumber: '',
       userAccount: '',
       password: '',
-      socialPlatform: '',
-      associated: ''
+      socialPlatform: ''
     })
   }
 
@@ -125,7 +124,6 @@ export default function ClientForm({
     event.preventDefault();
     const errorsCount = Object.keys(errors)
     if (errorsCount.length === 0) {
-      console.log('create client')
       const res = await createClient(auth.token, values);
       Swal.fire({
         icon: res.icon,
@@ -147,8 +145,7 @@ export default function ClientForm({
         phoneNumber: '',
         userAccount: '',
         password: '',
-        socialPlatform: '',
-        associated: true
+        socialPlatform: ''
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -220,26 +217,24 @@ export default function ClientForm({
             helperText={touched.password && errors.password}
             onChange={handleChange}
           />
-          <TextField
-            fullWidth
-            name='socialPlatform'
-            label='Plataforma'
-            {...getFieldProps('socialPlatform')}
-            inputProps={{readOnly: !editClientMode}}
-            error={Boolean(touched.socialPlatform && errors.socialPlatform)}
-            helperText={touched.socialPlatform && errors.socialPlatform}
-            onChange={handleChange}
-          />
-          <TextField
-            fullWidth
-            name='associated'
-            label='Asociado'
-            {...getFieldProps('associated')}
-            inputProps={{readOnly: !editClientMode}}
-            error={Boolean(touched.associated && errors.associated)}
-            helperText={touched.associated && errors.associated}
-            onChange={handleChange}
-          />
+
+          <FormControl fullWidth>
+            <InputLabel id="socialPlatform-label">Plataforma</InputLabel>
+            <Select
+              name='socialPlatform'
+              labelId="socialPlatform-label"
+              id="socialPlatform"
+              label="Plataforma"
+              {...getFieldProps('socialPlatform')}
+              onChange={handleChange}
+            >
+              <MenuItem disable={"true"} key={''} value={''}>Seleccione una plataforma</MenuItem>
+              <MenuItem key={'Facebook'} value={'Facebook'}>Facebook</MenuItem>
+              <MenuItem key={'Instagram'} value={'Instagram'}>Instagram</MenuItem>
+              <MenuItem key={'Youtube'} value={'Youtube'}>Youtube</MenuItem>
+            </Select>
+          </FormControl>
+
           {showUpdateButton &&
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
               <Button variant="contained" onClick={handleUpdateEmployee}>

@@ -23,6 +23,7 @@ export default function CampaignList({ campaigns, ...other }) {
       const index = Math.floor(Math.random() * 24) + 1
       url = `/static/mock-images/covers/cover_${index}.jpg`;
     }
+    url = `/static/mock-images/box_1.jpg`;
     return url
   }
 

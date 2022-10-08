@@ -37,12 +37,10 @@ import { getClients, eliminateClient, showClient } from '../utils/api'
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Nombre', alignRight: false },
-  { id: 'lastName', label: 'Apellido', alignRight: false },
-  { id: 'socialPlatform', label: 'Plataforma', alignRight: false },
-  { id: 'phoneNumber', label: 'Telefono', alignRight: false },
-  { id: 'associated', label: 'Asociado', alignRight: false },
-  { id: '' },
+  { id: 'name', label: 'Nombre', alignRight: true },
+  { id: 'lastName', label: 'Apellido', alignRight: true },
+  { id: 'socialPlatform', label: 'Plataforma', alignRight: true },
+  { id: 'phoneNumber', label: 'Telefono', alignRight: true },
 ];
 
 // ----------------------------------------------------------------------
@@ -92,7 +90,12 @@ export default function Client() {
     userId: 'cargando...'
   })
 
-  const [clientList, setClientList] = useState([{_id: '1', name: 'epa Alex'}])
+  const [clientList, setClientList] = useState([{
+    _id: '1', name: 'Cargando...',
+    lastName: 'Cargando...',
+    phoneNumber: 'Cargando...',
+    socialPlatform: 'Cargando...'
+  }])
 
   const [page, setPage] = useState(0);
 
@@ -156,7 +159,7 @@ export default function Client() {
       Swal.fire({
         icon: 'error',
         title: 'Ocurrió un error',
-        text: `Epa Alex`
+        text: `Error`
       })
       console.log(err)
     })
@@ -256,8 +259,7 @@ export default function Client() {
                         name,
                         lastName,
                         phoneNumber,
-                        socialPlatform,
-                        associated
+                        socialPlatform
                       } = row;
                       const isItemSelected = selected.indexOf(_id) !== -1;
                       return (
@@ -272,26 +274,14 @@ export default function Client() {
                           <TableCell padding="checkbox">
                             <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, _id)} />
                           </TableCell>
-                          <TableCell component="th" scope="row" padding="none" >
-                            <Stack direction="row" alignItems="center" spacing={2}>
-                              <Typography variant="subtitle2" noWrap>
-                                {name}
-                              </Typography>
-                            </Stack>
+                          <TableCell component="th" scope="row" padding="none" align="right">
+                            <Typography variant="subtitle2" noWrap>
+                              {name}
+                            </Typography>
                           </TableCell>
-                          <TableCell align="left">{lastName}</TableCell>
-                          <TableCell align="left">{socialPlatform}</TableCell>
-                          <TableCell align="left">{phoneNumber}</TableCell>
-                          <TableCell align="left">
-                            <Label variant="ghost" color={associated ? 'success' : 'error'}>
-                              {associated ? 'Si' :'No'}
-                            </Label>
-                          </TableCell>
-                          {/* <TableCell align="left">
-                            <Label variant="ghost" color={accessState ? 'success' : 'error'}>
-                              {accessState ?'Activo' :'Baneado'}
-                            </Label>
-                          </TableCell> */}
+                          <TableCell align="right">{lastName}</TableCell>
+                          <TableCell align="right">{socialPlatform}</TableCell>
+                          <TableCell align="right">{phoneNumber}</TableCell>
                           <TableCell align="right">
                             <ClientMoreMenu
                               elementId={_id}

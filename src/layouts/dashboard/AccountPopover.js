@@ -16,7 +16,7 @@ const MENU_OPTIONS = [
   {
     label: 'Home',
     icon: 'eva:home-fill',
-    linkTo: '/',
+    linkTo: '/dashboard/app',
   },
   {
     label: 'Mi Perfil',
@@ -24,9 +24,14 @@ const MENU_OPTIONS = [
     linkTo: '/dashboard/profile',
   },
   {
-    label: 'Settings',
+    label: 'Campañas',
     icon: 'eva:settings-2-fill',
-    linkTo: '#',
+    linkTo: '/dashboard/campaign',
+  },
+  {
+    label: 'Clientes',
+    icon: 'eva:settings-2-fill',
+    linkTo: '/dashboard/client',
   },
 ];
 

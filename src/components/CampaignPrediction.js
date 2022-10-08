@@ -20,7 +20,7 @@ export default function CampaignPrediction() {
   const PredictFormSchema = Yup.object().shape({
     duration: Yup.number()
       .min(7, 'Minimo 7 dias')
-      .max(120, 'Maximo 120 dias')
+      .max(300, 'Maximo 300 dias')
   });
 
   const formik = useFormik({
@@ -48,19 +48,19 @@ export default function CampaignPrediction() {
   const handleCleanValues = () => {
     resetForm()
     setPred(5)
-    setValues({ duration: 1, pay: 1 })
+    setValues({ duration: 0, pay: 0 })
   }
 
   const oneHotPred = async () => {
-    console.log(values.duration)
+    // console.log(values.duration)
     const { res } = await oneHotPrediction(auth.token, values.duration);
     // setPred(res)
-    console.log(res.data.pred[0].prediction)
+    // console.log(res.data.pred[0].prediction)
 
-    // setValues({
-    //     duration: 0,
-    //     pay: predP.res.data.pred[0].prediction
-    // })
+    setValues({
+        duration: values.duration,
+        pay: res.data.pred[0].prediction
+    })
   }
 
   const handleSubmit = async (event) => {    
@@ -91,7 +91,7 @@ export default function CampaignPrediction() {
         title={'Prediccion One Hot'}
         subheader={'Ingrese la duracion de la campaña para estimar la inversion por dia'}
       />
-      { predP }
+      
       <Box sx={{ p: 3, pb: 1, mb: 3 }} dir="ltr">
         <FormikProvider value={formik}>
           <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
