@@ -9,17 +9,22 @@ import {
   Link,
   Divider,
   Box,
-  Button 
+  Button,
+  Icon,
+  Grid
 } from '@mui/material';
-
-import { Timeline, TimelineDot, TimelineItem, TimelineContent, TimelineSeparator, TimelineConnector } from '@mui/lab';
-
+import { 
+  Timeline, 
+  TimelineDot, 
+  TimelineItem, 
+  TimelineContent, 
+  TimelineSeparator, 
+  TimelineConnector 
+} from '@mui/lab';
 // @mui
 import { alpha, styled } from '@mui/material/styles';
-
 import SimpleBarReact from 'simplebar-react';
 import Iconify from '../../../components/Iconify';
-
 // utils
 import { fDateTime } from '../../../utils/formatTime';
 
@@ -72,16 +77,38 @@ export default function AppOrderTimeline({ title, subheader, list, ...other }) {
         }}
       >
       <RootStyle>
-      <SimpleBarStyle timeout={500} clickOnTrack={false} {...other}>
-        <Timeline>
-          {list.map((item, index) => (
-            <OrderItem key={item.id} item={item} isLast={index === list.length - 1} />
-          ))}
-        </Timeline>
-      </SimpleBarStyle>
-    </RootStyle>
-        <Divider />
-
+        <SimpleBarStyle timeout={500} clickOnTrack={false} {...other}>
+          <Timeline>
+            {list.map((item, index) => (
+              <OrderItem key={item.id} item={item} isLast={index === list.length - 1} />
+            ))}
+          </Timeline>
+        </SimpleBarStyle>
+      </RootStyle>
+      
+      <Divider />
+      
+      <Grid container sx={{ mt:2, textAlign: 'center' }}>
+        <Grid item xs={4} md={4} lg={4}>
+          <Typography variant="body2">
+            <Iconify sx={{ mx: 1}} icon={'material-symbols:lens'} color="#FF0000" width={12} height={12}/>
+            Finalizada
+          </Typography>
+        </Grid>
+        <Grid item xs={4} md={4} lg={4}>
+          <Typography variant="body2">
+            <Iconify sx={{ mx: 1}} icon={'material-symbols:lens'} color="#FFBA01" width={12} height={12}/>
+            Pausada
+          </Typography>
+        </Grid>
+        <Grid item xs={4} md={4} lg={4}>
+          <Typography variant="body2">
+            <Iconify sx={{ mx: 1}} icon={'material-symbols:lens'} color="#0BDA51" width={12} height={12}/>
+            Activa
+          </Typography>
+        </Grid>
+      </Grid>
+      
       <Box sx={{ mt:2, textAlign: 'right' }}>
         <Link to={`/dashboard/clientCampaign/${id}`} 
           color="inherit" 
@@ -93,7 +120,7 @@ export default function AppOrderTimeline({ title, subheader, list, ...other }) {
           </Button>
         </Link>
       </Box>
-      
+      <Iconify icon={<Iconify icon={'eva:arrow-ios-forward-fill'} />} width={24} height={24} />
       </CardContent>
     </Card>
   );
