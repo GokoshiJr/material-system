@@ -67,6 +67,7 @@ export default function Login() {
           {mdUp && (
             <Logo />
           )}
+          {/* 
           {mdUp && (
             <Typography variant="body2" sx={{ mt: { md: -2 } }}>
               Don’t have an account? {''}
@@ -75,6 +76,7 @@ export default function Login() {
               </Link>
             </Typography>
           )}
+          */}
         </HeaderStyle>
 
         {mdUp && (
@@ -90,7 +92,7 @@ export default function Login() {
           <ContentStyle>
 
             <Typography variant="h4" gutterBottom>
-              Ingresar a Iventium
+              Iventium System
             </Typography>
 
             <Typography sx={{ color: 'text.secondary', mb: 5 }}>
@@ -99,7 +101,7 @@ export default function Login() {
 
             <LoginForm />
 
-            
+           {/* 
             {(!mdUp) && (
               <Typography variant="body2" align="center" sx={{ mt: 3 }}>
                 Don’t have an account?{' '}
@@ -108,7 +110,7 @@ export default function Login() {
                 </Link>
               </Typography>
             )}
-
+          */}
           </ContentStyle>
         </Container>
       </RootStyle>

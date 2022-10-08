@@ -8,14 +8,14 @@ IsLogged.propTypes = {
 }
 
 export default function IsLogged({ children }) {
-  
   const auth = React.useContext(AppContext);
+
   const location = useLocation(); 
-  
-  // si ya estoy logeado no me muestres la vista login/register
-  if (auth.token) {    
-    return <Navigate to="/dashboard" state={{ from: location }} replace />
+
+  // si ya estoy logeado no me muestres la vista login/register - redirección al loggear usuario
+  if (auth.token) {
+    return <Navigate to="/dashboard/app" state={{ from: location }} replace />
   }
-  
+
   return children;
 }
