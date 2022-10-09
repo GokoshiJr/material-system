@@ -81,32 +81,27 @@ export default function ReportForm({ campaign, projection }) {
 
   useEffect(() => {
     if (campaign && projection) {
-      const aux = projection.balances.filter(el => el.value < 0)
-      const values = projection.balances.map((el) => el.value)
+      // totalInvoiced
+      let totalInvoicedAux = projection.balances.filter(el => el.value < 0)
+      totalInvoicedAux = totalInvoicedAux.map(el => el.value)
+      totalInvoicedAux = totalInvoicedAux.reduce((a,b) => a + b)
+      // balance
+      const balanceAux = projection.balances.map((el) => el.value)
       const array = [...projection.balances]
       const auxCheck = array.pop()
-
 
       setValues({
         ...values,
         campaignId: campaign._id,
         promotedPostLink: campaign.promotePostLink,
-        totalInvoiced: aux.reduce((a,b) => a.value + b.value),
-        balance: values.reduce((a, b) => a + b),
+        totalInvoiced: totalInvoicedAux,
+        balance: balanceAux.reduce((a, b) => a + b),
         percentageCommission: 0,
         check: auxCheck.value,
         commission: 0,
         deposits: projection.balances.filter(el => el.value < 0)
       })
-      // setValues({
-      //   campaignId: campaign._id,
-      //   deposits: projection.balances.filter(el => el < 0),
-      //   promotedPostLink: campaign.promotePostLink,
-      //   totalInvoiced: aux.reduce((a,b) => a + b),
-      //   balance: projection.balances.reduce((a, b) => a.value + b.value),
-      //   percentageCommission: 0,
-      //   commission: 0
-      // })
+
     }
   }, [campaign, projection])
 

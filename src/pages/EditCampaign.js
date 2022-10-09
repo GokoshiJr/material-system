@@ -131,7 +131,7 @@ export default function Register({
                   onClick={() => setShowProjectionView(false)}
                 >Regresar</Button>
 
-                {projection !== null &&
+                {projection.balances.length > 1 &&
                     <Button
                       variant="outlined" size="small"
                       component={RouterLink} 
