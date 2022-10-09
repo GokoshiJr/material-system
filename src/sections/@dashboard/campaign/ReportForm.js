@@ -44,7 +44,8 @@ export default function ReportForm({ campaign, projection }) {
       totalInvoiced: 0,
       balance: 0,
       percentageCommission: 0,
-      commission: 0
+      commission: 0,
+      check: 0
     },
     validationSchema: ReportFormSchema
   });
@@ -80,16 +81,32 @@ export default function ReportForm({ campaign, projection }) {
 
   useEffect(() => {
     if (campaign && projection) {
-      const aux = projection.balances.filter(el => el < 0)
+      const aux = projection.balances.filter(el => el.value < 0)
+      const values = projection.balances.map((el) => el.value)
+      const array = [...projection.balances]
+      const auxCheck = array.pop()
+
+
       setValues({
+        ...values,
         campaignId: campaign._id,
-        deposits: projection.balances.filter(el => el < 0),
         promotedPostLink: campaign.promotePostLink,
-        totalInvoiced: aux.reduce((a,b) => a + b),
-        balance: projection.balances.reduce((a, b) => a + b),
+        totalInvoiced: aux.reduce((a,b) => a.value + b.value),
+        balance: values.reduce((a, b) => a + b),
         percentageCommission: 0,
-        commission: 0
+        check: auxCheck.value,
+        commission: 0,
+        deposits: projection.balances.filter(el => el.value < 0)
       })
+      // setValues({
+      //   campaignId: campaign._id,
+      //   deposits: projection.balances.filter(el => el < 0),
+      //   promotedPostLink: campaign.promotePostLink,
+      //   totalInvoiced: aux.reduce((a,b) => a + b),
+      //   balance: projection.balances.reduce((a, b) => a.value + b.value),
+      //   percentageCommission: 0,
+      //   commission: 0
+      // })
     }
   }, [campaign, projection])
 
@@ -107,37 +124,7 @@ export default function ReportForm({ campaign, projection }) {
             error={Boolean(touched.campaignId && errors.campaignId)}
             helperText={touched.campaignId && errors.campaignId}
             onChange={handleChange}
-          />
-
-          <List>
-            <Typography variant="h5" sx={{ mb:1 }}>
-              Depositos
-            </Typography>
-            {values.deposits.length > 0
-              ?
-              values.deposits.map((balance, index) =>    
-                <ListItem disablePadding key={index} sx={{
-                  mt:2,
-                  borderRadius: '10px', 
-                  border: '1px solid black', 
-                  borderColor: '#D7D7D7' 
-                }}>
-                  <ListItemButton>
-                    <ListItemText primary={`${index+1}. ${balance} $`} />
-                  </ListItemButton>
-                </ListItem>
-              )
-              : 
-              <ListItemButton sx={{ 
-                mt:2,
-                borderRadius: '10px', 
-                border: '1px solid black', 
-                borderColor: '#D7D7D7' 
-               }}>
-              <ListItemText primary={`Este campaña no posee depositos...`} />
-              </ListItemButton>
-            }
-          </List>
+          /> 
 
           <List>
             <Typography variant="h5" sx={{ mb:1 }}>
@@ -169,6 +156,8 @@ export default function ReportForm({ campaign, projection }) {
             }
           </List>
 
+          
+
           <Typography variant="h5" sx={{ mb:1 }}>
             Inversión Total ($)
           </Typography>
@@ -180,6 +169,8 @@ export default function ReportForm({ campaign, projection }) {
             inputProps={{readOnly: true}}
           />
 
+        
+
           <Typography variant="h5" sx={{ mb:1 }}>
             Balance Actual ($)
           </Typography>
@@ -187,6 +178,16 @@ export default function ReportForm({ campaign, projection }) {
             fullWidth
             name='balance'
             {...getFieldProps('balance')}
+            inputProps={{readOnly: true}}
+          />
+
+<Typography variant="h5" sx={{ mb:1 }}>
+            Coste de la Campaña ($)
+          </Typography>
+          <TextField
+            fullWidth
+            name='check'
+            {...getFieldProps('check')}
             inputProps={{readOnly: true}}
           />
 
@@ -216,6 +217,7 @@ export default function ReportForm({ campaign, projection }) {
             onChange={handleChange}
           />
           <Button onClick={handleSubmit}>Enviar Reporte</Button>
+
         </Stack>
       </Form>
     </FormikProvider>

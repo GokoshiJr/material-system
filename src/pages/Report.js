@@ -46,7 +46,7 @@ export default function Report() {
   const { id } = useParams();
 
   const [projection, setProjection] = useState({
-    balances: [-1,-2,3]
+    balances: [{value: -1}, {value: -2}, {value: 5}, {value: 4}]
   })
 
   const [campaign, setCampaign] = useState({

@@ -55,67 +55,98 @@ export default function Register({
   showClientInCampaign
 }) {
 
-  return (
-    <Page title="Campaña">
-      <RootStyle>
-        <Container>
-          <ContentStyle>
-            <Stack
-              direction="row"
-              alignItems="center"
-              justifyContent="space-between"
-              mb={5}
-            >
-              <Typography variant="h4" gutterBottom>
-                {title} Campaña
-              </Typography>
+  const [showProjectionView, setShowProjectionView] = useState(false)
 
-              <Button variant="outlined" size="small">Editar</Button>
-              {projection !== null &&
+  if (!showProjectionView) {
+    return (
+      <Page title="Campaña">
+        <RootStyle>
+          <Container>
+            <ContentStyle>
+              <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="space-between"
+                mb={2}
+              >
+                <Typography variant="h4" gutterBottom>
+                  {title} Campaña
+                </Typography>
+              </Stack>
+
+              <Stack direction="row" alignItems="center" justifyContent="center" spacing={2} mb={2}>
+
+                {projection !== null &&
                   <Button
                     variant="outlined" size="small"
-                    component={RouterLink} 
-                    to={`/dashboard/report/${campaign._id}`}
-                  >Crear Reporte</Button>
-              }
-              <Button variant="outlined" size="small">Eliminar </Button>
-            </Stack>
+                    onClick={() => setShowProjectionView(true)}
+                  >Proyección</Button>
+                }
 
-            <CampaignEditForm
-              campaign={campaign}
-            />
+                <Button color='success' variant="outlined" size="small">Editar</Button>
+                <Button color='error' variant="outlined" size="small">Eliminar</Button>
+              </Stack>
 
-            {(projection === null || projection.link === 'Cargando...')
-              ?
-              <Box sx={{ width: '100%', mt: 4 }} textAlign="center">
-                <Typography variant="h6" gutterBottom textAlign="center" sx={{ mb: 3 }}>
-                  ¡Esta campaña no está asignada a un cliente!
-                </Typography>
-                <Button component={RouterLink} to={`/dashboard/projection/${campaign._id}`}
-                  variant="outlined" size="small">Crear Proyección</Button>
-              </Box>
-              :
-              <>
-                <Stack
-                  direction="row"
-                  alignItems="center"
-                  justifyContent="space-between"
-                  mt={5}
-                  mb={5}
-                >
-                  <Typography variant="h4" gutterBottom>
-                    Proyección
+              <CampaignEditForm
+                campaign={campaign}
+              />
+
+              {(projection === null || projection.link === 'Cargando...')
+                &&
+                <Box sx={{ width: '100%', mt: 4 }} textAlign="center">
+                  <Typography variant="h6" gutterBottom textAlign="center" sx={{ mb: 3 }}>
+                    ¡Esta campaña no está asignada a un cliente!
                   </Typography>
-                </Stack>
-                <ProjectionEditForm
-                  projection={projection}
-                  showClientInCampaign={showClientInCampaign}
-                />
-              </>
-            }
-          </ContentStyle>
-        </Container>
-      </RootStyle>
-    </Page>
-  );
+                  <Button component={RouterLink} to={`/dashboard/projection/${campaign._id}`}
+                    variant="outlined" size="small">Crear Proyección</Button>
+                </Box>
+              }
+            </ContentStyle>
+          </Container>
+        </RootStyle>
+      </Page>
+    );
+  }
+
+  if (showProjectionView) {
+    return (
+      <Page title="Proyección">
+        <RootStyle>
+          <Container>
+            <ContentStyle>
+              <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="center"
+                mb={2}
+              >
+                <Typography variant="subtitle1" gutterBottom>
+                  Proyección de la campaña {campaign.name}
+                </Typography>
+              </Stack>
+
+              <Stack direction="row" alignItems="center" justifyContent="center" spacing={2} mb={2}>
+                <Button
+                  variant="outlined" size="small"
+                  onClick={() => setShowProjectionView(false)}
+                >Regresar</Button>
+
+                {projection !== null &&
+                    <Button
+                      variant="outlined" size="small"
+                      component={RouterLink} 
+                      to={`/dashboard/report/${campaign._id}`}
+                    >Enviar Reporte</Button>
+                }
+              </Stack>
+              <ProjectionEditForm
+                projection={projection}
+                showClientInCampaign={showClientInCampaign}
+              />
+            </ContentStyle>
+          </Container>
+        </RootStyle>
+      </Page>
+    );
+  }
 }

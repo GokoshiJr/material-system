@@ -41,7 +41,7 @@ export default function ProjectionCreateForm({ campaign, clients }) {
       name: '',
       clientId: '',
       link: '',
-      balances: []
+      balances: [{}]
     },
     validationSchema: ProjectionCreateFormSchema
   });
@@ -76,7 +76,10 @@ export default function ProjectionCreateForm({ campaign, clients }) {
         ...values,
         campaignId: campaign._id,
         name: campaign.name,
-        balances: [campaign.perDayBudget * campaign.promotionDuration]
+        balances: [{
+          value: campaign.perDayBudget * campaign.promotionDuration,
+          date: Date.now()
+        }]
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
