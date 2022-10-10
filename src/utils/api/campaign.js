@@ -2,6 +2,35 @@ import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
+async function deleteCampaign(token, id) {
+  try {
+    const res = await axios({
+      headers: {"x-access-token": token},
+      url: `${API_URL}/campaign/${id}`,
+      method: 'DELETE'
+    })
+    return res.data;
+  } catch (err) {
+    console.log(err)
+    return err.response.data;
+  }
+}
+
+async function update(token, campaign, id) {
+  try {
+    const res = await axios({
+      headers: {"x-access-token": token},
+      url: `${API_URL}/campaign/${id}`,
+      method: 'PUT',
+      data: campaign
+    })
+    return res.data;
+  } catch (err) {
+    console.log(err)
+    return err.response.data;
+  }
+}
+
 async function sendReport(token, report) {
   try {
     const res = await axios({
@@ -141,6 +170,8 @@ async function show(token, id) {
 }
 
 export {
+  deleteCampaign,
+  update,
   sendReport,
   getCampaignUnasigned,
   store,

@@ -40,7 +40,7 @@ const TABLE_HEAD = [
   { id: 'name', label: 'Nombre', alignRight: true },
   { id: 'lastName', label: 'Apellido', alignRight: true },
   { id: 'socialPlatform', label: 'Plataforma', alignRight: true },
-  { id: 'phoneNumber', label: 'Telefono', alignRight: true },
+  { id: 'phoneNumber', label: 'Teléfono', alignRight: true },
 ];
 
 // ----------------------------------------------------------------------

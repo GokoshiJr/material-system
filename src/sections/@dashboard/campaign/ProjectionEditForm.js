@@ -125,19 +125,6 @@ const handleChangePage = (event, newPage) => {
     touched,
   } = formik;
 
-  let balance = []
-
-  if (projection) {
-    balance = projection.balances.map((balance, index) =>    
-    
-    <ListItem disablePadding key={index} sx={{ mt: 2 }}>
-      <ListItemButton>
-        <ListItemText primary={`Monto: ${balance.value} $ Fecha: ${format(new Date(balance.date), 'MM/dd/yy')}      ID: ${balance._id.slice(18, 24)}`} />
-      </ListItemButton>
-    </ListItem>
-    
-    )
-  }
 const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - projection.balances.length) : 0;
   const handleResetValues = () => {
     setValues({
@@ -203,7 +190,7 @@ const handleRequestSort = (event, property) => {
       if (res.isConfirmed) {
         Swal.fire({
           icon: 'success',
-          title: 'Pago agregado con exito',
+          title: 'Pago agregado con éxito',
           showConfirmButton: false,
           timer: 1500,
           background: `rgba(210,210,210,1)`,
@@ -216,6 +203,7 @@ const handleRequestSort = (event, property) => {
   }
 
   useEffect(() => {
+    console.log(projection)
     if (projection) handleResetValues();
     // if (!client) {
     //   setValues({

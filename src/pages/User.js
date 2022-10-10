@@ -36,8 +36,8 @@ import { getEmployees, showEmployee, eliminateEmployee, updateEmployee, updateUs
 const TABLE_HEAD = [
   { id: 'name', label: 'Nombre', alignRight: false },
   { id: 'lastName', label: 'Apellido', alignRight: false },
-  { id: 'socialId', label: 'Cedula', alignRight: false },
-  { id: 'phoneNumber', label: 'Telefono', alignRight: false },
+  { id: 'socialId', label: 'Cédula', alignRight: false },
+  { id: 'phoneNumber', label: 'Teléfono', alignRight: false },
   { id: 'userId._id', label: 'Rol', alignRight: false },
   { id: 'accessState', label: 'Estatus', alignRight: false },
   { id: '' },
@@ -154,7 +154,7 @@ export default function User() {
         setSelected([])
         Swal.fire({
           icon: 'success',
-          title: 'Empleado eliminado con exito',
+          title: 'Empleado eliminado con éxito',
           background: `rgba(210,210,210,1)`,
           backdrop: `rgba(0,0,0,0)`
         })

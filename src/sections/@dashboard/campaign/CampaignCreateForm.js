@@ -1,6 +1,5 @@
-
+import PropTypes from 'prop-types';
 import { useContext, useEffect, useState } from 'react';
-
 import { useFormik, Form, FormikProvider } from 'formik';
 import * as Yup from 'yup';
 // material
@@ -12,7 +11,6 @@ import {
   MenuItem,
   InputLabel,
   FormControl,
-
   ListItem,
   ListItemButton,
   ListItemText
@@ -27,12 +25,20 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 // context
 import { AppContext } from '../../../context/AppContext';
 // api method
-import { getCampaignTypes, store } from '../../../utils/api/campaign';
-
+import { getCampaignTypes, store, update } from '../../../utils/api/campaign';
 
 // ----------------------------------------------------------------------
 
-export default function CampaignCreateForm() {
+CampaignCreateForm.propTypes = {
+  campaign: PropTypes.object,
+};
+
+export default function CampaignCreateForm({ 
+  campaign,
+  updateMode
+}) {
+  
+  const [createMode, setCreateMode] = useState(false)
   const auth = useContext(AppContext);
 
   const [audienceGenderArray, setAudienceGenderArray] = useState([
@@ -41,7 +47,7 @@ export default function CampaignCreateForm() {
 
   const [interestSegmentationArray, setInterestSegmentationArray] = useState([
     'Aficiones y Actividades', 'Comida y bebidas', 'Compras y Moda', 
-    'Deportes', 'Entretenimiento', 'Familia', 'Fitness', 'Negocios', 'Tecnologia'
+    'Deportes', 'Entretenimiento', 'Familia', 'Fitness', 'Negocios', 'Tecnología'
   ])
 
   const [destinationArray, setDestinationArray] = useState([
@@ -58,9 +64,9 @@ export default function CampaignCreateForm() {
   const [
     demographicsDataSegmentationArray, 
     setDemographicsDataSegmentationArray
-  ] = useState(['Nivel de ingresos', 'Edad', 'Religion', 'Educacion'])
+  ] = useState(['Nivel de ingresos', 'Edad', 'Religión', 'Educación'])
 
-  const [campaignTypes, setCampaignTypes] = useState([])
+  const [campaignTypes, setCampaignTypes] = useState([{_id: '', name:''}])
 
   const [initDate, setInitDate] = useState(Date.now())
 
@@ -78,13 +84,10 @@ export default function CampaignCreateForm() {
       .required('El nombre es requerido'),
     ageTop: Yup.number()
       .required('El nombre es requerido'),
-    
-
   });
 
   const formik = useFormik({
     initialValues: {
-      
       name: '',
       isPost: '',
       isVideo: '',
@@ -138,6 +141,17 @@ export default function CampaignCreateForm() {
     })
   }
 
+  const handleUpdate = async () => {
+    const res = await update(auth.token, {...values, initDate, finalDate}, campaign._id)
+    console.log(res)
+    Swal.fire({
+      icon: res.icon,
+      title: res.title,
+      background: `rgba(210,210,210,1)`,
+      backdrop: `rgba(0,0,0,0)`
+    })
+  }
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setValues({...formik.values, [name]: value});
@@ -165,17 +179,22 @@ export default function CampaignCreateForm() {
     }
 
     const res = await store(auth.token, campaign)
+    
+    console.log(res)
+
     Swal.fire({
-      icon: 'success',
-      title: 'Campaña creada con éxito',
+      icon: res.data.icon,
+      title: res.data.title,
       background: `rgba(210,210,210,1)`,
       backdrop: `rgba(0,0,0,0)`
     })
+
     handleCleanValues() 
   }
 
   const _getCampaignTypes = async () => {
-    const { data } = await getCampaignTypes(auth.token)    
+    const { data } = await getCampaignTypes(auth.token) 
+
     setCampaignTypes(data)
   }
 
@@ -195,33 +214,55 @@ export default function CampaignCreateForm() {
     }
   }
 
-  const linkList = values.promotePostLink.map((el, index) => 
-    <ListItem disablePadding key={index} sx={{ 
-      mt: 2,
-      borderRadius: '10px', 
-      border: '1px solid', 
-    }}>
-      <ListItemButton>
-        <ListItemText primary={`${index+1}. $`} />
-      </ListItemButton>
-    </ListItem>
-  )
-
+  const handleEliminateLink = (i) => {
+    console.log(campaign.promotePostLink.splice(i, 1))
+    console.log(i)
+    setValues({...values, promotePostLink: campaign.promotePostLink })
+  }
   useEffect(() => {
     _getCampaignTypes()
+    
+    if (campaign) {
+      setValues({
+        ...values,
+        name: campaign.name,
+        isPost: campaign.isPost,
+        isVideo: campaign.isVideo,
+        campaignTypeId: campaign.campaignTypeId._id,
+        promotePostLink: campaign.promotePostLink,
+        ubication: campaign.ubication,
+        destination: campaign.destination,
+        linkAPI: campaign.linkAPI,
+        demographicsDataSegmentation: campaign.demographicsDataSegmentation,
+        interestSegmentation: campaign.interestSegmentation,
+        ageFloor: campaign.audienceAge[0],
+        ageTop: campaign.audienceAge[1],
+        audienceGender: campaign.audienceGender,
+        perDayBudget: campaign.perDayBudget
+
+      })
+      
+      setInitDate(new Date(campaign.initDate))
+      setFinalDate(new Date(campaign.finalDate))
+    } else {
+      setCreateMode(true)
+      console.log('crate')
+    }
+    
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [campaign])
 
   return (
     <FormikProvider value={formik}>
       <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
         <Stack spacing={3}>
+        
           <TextField
             fullWidth
             name='name'
             label='Nombre'
             {...getFieldProps('name')}
-            inputProps={{readOnly: !true}}
+            inputProps={{readOnly: false}}
             error={Boolean(touched.name && errors.name)}
             helperText={touched.name && errors.name}
             onChange={handleChange}
@@ -238,6 +279,7 @@ export default function CampaignCreateForm() {
                 {...getFieldProps('isPost')}
                 label="Publicación de Posts"
                 onChange={handleChange}
+                inputProps={{readOnly: false}}
               >
                 <MenuItem value={'true'}>Si</MenuItem>
                 <MenuItem value={'false'}>No</MenuItem>
@@ -250,6 +292,7 @@ export default function CampaignCreateForm() {
                 name='isVideo'
                 labelId='isVideo-label'
                 id='isVideo'
+                inputProps={{readOnly: false}}
                 {...getFieldProps('isVideo')}
                 label="Publicación de Videos"
                 onChange={handleChange}
@@ -261,22 +304,25 @@ export default function CampaignCreateForm() {
 
           </Stack>
 
-          <FormControl fullWidth>
-            <InputLabel id="campaignTypeId-label">Tipo de Campaña</InputLabel>
-            <Select
-              name='campaignTypeId'
-              labelId="campaignTypeId-label"
-              id="campaignTypeId"
-              {...getFieldProps('campaignTypeId')}
-              label="Tipo de campaña"
-              onChange={handleChange}
-            >
-              {campaignTypes.map((el) => 
-                <MenuItem key={el._id} value={el._id}>{el.name}</MenuItem>
-              )}
-            </Select>
-          </FormControl>
-        
+          {values.campaignTypeId !== undefined &&
+            <FormControl fullWidth>
+              <InputLabel id="campaignTypeId-label">Tipo de Campaña</InputLabel>
+              <Select
+                name='campaignTypeId'
+                labelId="campaignTypeId-label"
+                id="campaignTypeId"
+                {...getFieldProps('campaignTypeId')}
+                label="Tipo de campaña"
+                inputProps={{readOnly: false}}
+                onChange={handleChange}
+              >
+                {campaignTypes.map((el) => 
+                  <MenuItem key={el._id} value={el._id}>{el.name}</MenuItem>
+                )}
+              </Select>
+            </FormControl>
+          }
+
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DesktopDatePicker
@@ -291,7 +337,7 @@ export default function CampaignCreateForm() {
 
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DesktopDatePicker
-                label="Fecha de finalizacion"
+                label="Fecha de finalización"
                 inputFormat="dd/MM/yyyy"
                 value={finalDate}
                 name='finalDate'
@@ -305,9 +351,9 @@ export default function CampaignCreateForm() {
             <TextField
               fullWidth
               name='name'
-              label='Links de promocion'
+              label='Links de promoción'
               value={link}
-              inputProps={{readOnly: !true}}
+              inputProps={{readOnly: false}}
               error={Boolean(isLinkError && 'errors.linkError')}
               helperText={isLinkError && 'Ingrese un link valido'}
               onChange={handleLink}
@@ -317,7 +363,7 @@ export default function CampaignCreateForm() {
             </Button>
           </Stack>
 
-          {values.promotePostLink.map((el, index) => 
+          {values.promotePostLink !== undefined && values.promotePostLink.map((el, index) => 
             <ListItem disablePadding key={index} 
               sx={{
                 borderRadius: '10px', 
@@ -327,8 +373,9 @@ export default function CampaignCreateForm() {
               <ListItemButton>
                 <ListItemText primary={`Link ${index+1}. ${el}`} />
               </ListItemButton>
+              <Button onClick={() => handleEliminateLink(index)}>Eliminar</Button>
             </ListItem>
-          )}
+          )} 
 
           <FormControl fullWidth>
             <InputLabel id="destination-label">Destino de la Campaña</InputLabel>
@@ -336,6 +383,7 @@ export default function CampaignCreateForm() {
               name='destination'
               labelId="destination-label"
               id="destination"
+              inputProps={{readOnly: false}}
               {...getFieldProps('destination')}
               label="Destino de la Campaña"
               onChange={handleChange}
@@ -351,7 +399,7 @@ export default function CampaignCreateForm() {
             name='linkAPI'
             label='Link de la API (Opcional)'
             {...getFieldProps('linkAPI')}
-            inputProps={{readOnly: !true}}
+            inputProps={{readOnly: false}}
             error={Boolean(touched.linkAPI && errors.linkAPI)}
             helperText={touched.linkAPI && errors.linkAPI}
             onChange={handleChange}
@@ -365,6 +413,7 @@ export default function CampaignCreateForm() {
               id="ubication"
               {...getFieldProps('ubication')}
               label="Ubicación de la Campaña"
+              inputProps={{readOnly: false}}
               onChange={handleChange}
             >
               {ubicationArray.map((el, index) => 
@@ -380,6 +429,7 @@ export default function CampaignCreateForm() {
               labelId="demographicsDataSegmentation-label"
               id="demographicsDataSegmentation"
               label="Segmentación Demográfica"
+              inputProps={{readOnly: false}}
               {...getFieldProps('demographicsDataSegmentation')}
               onChange={handleChange}
             >
@@ -389,6 +439,7 @@ export default function CampaignCreateForm() {
             </Select>
           </FormControl>
           
+
           <FormControl fullWidth>
             <InputLabel id="interestSegmentation-label">Segmentación por Intereses</InputLabel>
             <Select
@@ -396,6 +447,7 @@ export default function CampaignCreateForm() {
               labelId="interestSegmentation-label"
               id="interestSegmentation"
               label="Segmentación por Intereses"
+              inputProps={{readOnly: false}}
               {...getFieldProps('interestSegmentation')}
               onChange={handleChange}
             >
@@ -404,15 +456,17 @@ export default function CampaignCreateForm() {
               )}
             </Select>
           </FormControl>
+          
+          
 
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
             <TextField
               type="number"
               fullWidth
               name='ageFloor'
-              label='Limite inferior (años)'
+              label='Límite inferior (años)'
               {...getFieldProps('ageFloor')}
-              inputProps={{readOnly: !true}}
+              inputProps={{readOnly: false}}
               error={Boolean(touched.ageFloor && errors.ageFloor)}
               helperText={touched.ageFloor && errors.ageFloor}
               onChange={handleChange}
@@ -420,9 +474,9 @@ export default function CampaignCreateForm() {
             <TextField
               fullWidth
               name='ageTop'
-              label='Limite superior (años)'
+              label='Límite superior (años)'
               {...getFieldProps('ageTop')}
-              inputProps={{readOnly: !true}}
+              inputProps={{readOnly: false}}
               error={Boolean(touched.ageTop && errors.ageTop)}
               helperText={touched.ageTop && errors.ageTop}
               onChange={handleChange}
@@ -438,6 +492,7 @@ export default function CampaignCreateForm() {
                 id="audienceGender"
                 {...getFieldProps('audienceGender')}
                 label="Género de la audiencia"
+                inputProps={{readOnly: false}}
                 onChange={handleChange}
               >
                 {audienceGenderArray.map((el, index) => 
@@ -450,17 +505,28 @@ export default function CampaignCreateForm() {
               type='number'
               fullWidth
               name='perDayBudget'
-              label='Inversion por día ($)'
+              label='Inversión por día ($)'
               {...getFieldProps('perDayBudget')}
-              inputProps={{readOnly: !true}}
+              inputProps={{readOnly: false}}
               error={Boolean(touched.perDayBudget && errors.perDayBudget)}
               helperText={touched.perDayBudget && errors.perDayBudget}
               onChange={handleChange}
             />
+
           </Stack> 
-          <Button variant="contained" color="primary" onClick={handleSubmit}>
-            Registrar Campaña
-          </Button>
+
+          {updateMode &&
+            <Button variant="contained" color="primary" onClick={handleUpdate}>
+              Actualizar Campaña
+            </Button>
+          }
+
+          {createMode &&
+            <Button variant="contained" color="primary" onClick={handleSubmit}>
+              Registrar Campaña
+            </Button>
+          }
+
         </Stack>
       </Form>
     </FormikProvider>

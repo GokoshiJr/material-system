@@ -78,6 +78,7 @@ export default function ClientForm({
     const res = await updateClient(auth.token, id, values);
     // actualiza el empleado del state
     showEmp()
+    console.log(res.title)
     Swal.fire({
       icon: res.icon,
       title: res.title,
@@ -190,7 +191,7 @@ export default function ClientForm({
           <TextField
             fullWidth
             name='phoneNumber'
-            label='Telefono'
+            label='Teléfono'
             {...getFieldProps('phoneNumber')}
             inputProps={{readOnly: !editClientMode}}
             error={Boolean(touched.phoneNumber && errors.phoneNumber)}

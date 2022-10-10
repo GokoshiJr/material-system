@@ -45,30 +45,29 @@ export default function Campaign() {
   const [campaignSelectedArray, setCampaignSelectedArray] = useState([])
 
   const [showCampaign, setShowCampaign] = useState({
-    name: 'Cargando...',
+    name: '',
     audienceAge: [0, 1],
-    audienceGender: 'Cargando...',
-    campaignState: 'Cargando...',
-    campaignTypeId: {
-      name: 'Cargando...'
-    },
-    demographicsDataSegmentation: 'Cargando...',
-    initDate: 'Cargando...',
-    finalDate: 'Cargando...',
-    interestSegmentation: 'Cargando...',
-    isPost: 'Cargando...',
-    isVideo: 'Cargando...',
-    linkAPI: 'Cargando...',
+    audienceGender: '',
+    campaignState: '',
+    campaignTypeId: '',
+    demographicsDataSegmentation: '',
+    initDate: '',
+    finalDate: '',
+    interestSegmentation: '',
+    isPost: '',
+    isVideo: '',
+    linkAPI: '',
     perDayBudget: 0,
     promotionDuration: 0,
-    ubication: 'Cargando...'
+    ubication: '',
+    destination: ''
   })
 
   const [projection, setProjection] = useState({
-    link: 'Cargando...',
+    link: '',
     balances: [0],
-    campaignId: 'Cargando...',
-    clientId: 'Cargando...'
+    campaignId: '',
+    clientId: ''
   })
 
   const formik = useFormik({
@@ -135,23 +134,23 @@ export default function Campaign() {
   useEffect(() => {
     // para no ver la campaña vista anteriormente
     setShowCampaign({
-      name: 'Cargando...',
+      name: '',
       audienceAge: [0, 1],
-      audienceGender: 'Cargando...',
-      campaignState: 'Cargando...',
-      campaignTypeId: {
-        name: 'Cargando...'
-      },
-      demographicsDataSegmentation: 'Cargando...',
-      initDate: 'Cargando...',
-      finalDate: 'Cargando...',
-      interestSegmentation: 'Cargando...',
-      isPost: 'Cargando...',
-      isVideo: 'Cargando...',
-      linkAPI: 'Cargando...',
+      audienceGender: '',
+      campaignState: '',
+      campaignTypeId: '',
+      demographicsDataSegmentation: '',
+      initDate: '',
+      finalDate: '',
+      interestSegmentation: '',
+      isPost: '',
+      isVideo: '',
+      linkAPI: '',
       perDayBudget: 0,
       promotionDuration: 0,
-      ubication: 'Cargando...'
+      ubication: '',
+      promotePostLink: [],
+      destination: ''
     })
     setProjection({
       link: 'Cargando...',

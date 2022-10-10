@@ -132,7 +132,7 @@ export default function UserMoreMenu({
               setElements(data);
               Swal.fire({
                 icon: 'success',
-                title: 'Empleado eliminado con exito',
+                title: 'Empleado eliminado con éxito',
                 background: `rgba(210,210,210,1)`,
                 backdrop: `rgba(0,0,0,0)`
               })

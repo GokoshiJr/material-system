@@ -24,12 +24,12 @@ const navConfig = [
   {
     title: 'Clientes',
     path: '/dashboard/client',
-    icon: getIcon('eva:people-fill'),
+    icon: getIcon('material-symbols:database'),
   },
   {
     title: 'Campañas',
     path: '/dashboard/campaign',
-    icon: getIcon('eva:people-fill'),
+    icon: getIcon('material-symbols:shopping-bag-outline'),
   },
   // {
   //   title: 'product',

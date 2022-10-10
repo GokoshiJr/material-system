@@ -176,7 +176,7 @@ export default function ProfileForm({
             name='email'
             label='Correo'
             {...getFieldProps('email')}
-            inputProps={{readOnly: true}}
+            inputProps={{readOnly: !editEmployeeMode}}
             error={Boolean(touched.email && errors.email)}
             helperText={touched.email && errors.email}
             onChange={handleChange}
@@ -219,7 +219,7 @@ export default function ProfileForm({
           <TextField
             fullWidth
             name='phoneNumber'
-            label='Telefono'
+            label='Teléfono'
             {...getFieldProps('phoneNumber')}
             inputProps={{readOnly: !editEmployeeMode}}
             error={Boolean(touched.phoneNumber && errors.phoneNumber)}
@@ -229,7 +229,7 @@ export default function ProfileForm({
           <TextField
             fullWidth
             name='socialId'
-            label='Cedula'
+            label='Cédula'
             {...getFieldProps('socialId')}
             inputProps={{readOnly: !editEmployeeMode}}
             error={Boolean(touched.socialId && errors.socialId)}

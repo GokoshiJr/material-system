@@ -68,6 +68,7 @@ export default function ProjectionCreateForm({ campaign, clients }) {
       background: `rgba(210,210,210,1)`,
       backdrop: `rgba(0,0,0,0)`
     })
+    window.location.href = `/dashboard/campaign/${values.campaignId}`
   }
 
   useEffect(() => {
