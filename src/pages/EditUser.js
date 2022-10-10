@@ -5,8 +5,10 @@ import { styled } from '@mui/material/styles';
 import {
   Container,
   Typography,
-  Stack
+  Stack,
+  Button
 } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
 // components
 import Page from '../components/Page';
 // sections
@@ -61,6 +63,10 @@ export default function Register({
               <Typography variant="h4" gutterBottom>
                 {title} Empleado
               </Typography>
+              <Button
+                variant="contained" size="small"
+                component={RouterLink} to={`/dashboard/user`}
+              >Regresar</Button>
             </Stack>
             <ProfileForm
               employee={employee}

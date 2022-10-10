@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link as RouterLink } from 'react-router-dom';
 // @mui
 import { styled } from '@mui/material/styles';
 import {
@@ -88,6 +88,14 @@ export default function Report() {
               <Typography variant="h4" gutterBottom>
                 Reporte de Campaña
               </Typography>
+              <Button
+                variant="contained" 
+                size="small"
+                component={RouterLink} 
+                to={`/dashboard/campaign/${id}`}
+              >
+                Regresar
+              </Button>
             </Stack>
             <ReportForm
               campaign={campaign}

@@ -21,7 +21,7 @@ export default function AppCampaignPredictionScatterPlot({test, predData}) {
   return (    
     <Card sx={{ p: 4 }}>
       <CardHeader
-        title={'Predicciones'}
+        title={'Curva de predicción'}
         subheader={'Pago por dia x Duracion de la campaña'}
       />
       <ResponsiveContainer width={'99%'} height={400}>
@@ -36,7 +36,7 @@ export default function AppCampaignPredictionScatterPlot({test, predData}) {
         }}
       >
         <CartesianGrid />
-        <XAxis type="number" dataKey="x" name="Dias" unit="d" />
+        <XAxis type="number" dataKey="x" name="Días" unit="d" />
         <YAxis
           yAxisId="left"
           type="number"

@@ -17,6 +17,7 @@ import {
 } from '@mui/material';
 // sweetalert2
 import Swal from 'sweetalert2';
+import { LoadingButton } from '@mui/lab'
 // date-fns
 import { differenceInDays } from 'date-fns'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -38,6 +39,8 @@ export default function CampaignCreateForm({
   updateMode
 }) {
   
+  const [isLoadingButton, setIsLoadingButton] = useState(false)
+
   const [createMode, setCreateMode] = useState(false)
   const auth = useContext(AppContext);
 
@@ -58,7 +61,7 @@ export default function CampaignCreateForm({
 
   const [ubicationArray, setUbicationArray] = useState([
     'Carabobo', 'Lara', 'Aragua', 'Miranda',
-    'Guarico', 'Distrito Capital'
+    'Guárico', 'Distrito Capital'
   ])
 
   const [
@@ -142,8 +145,9 @@ export default function CampaignCreateForm({
   }
 
   const handleUpdate = async () => {
+    setIsLoadingButton(true);
     const res = await update(auth.token, {...values, initDate, finalDate}, campaign._id)
-    console.log(res)
+    setIsLoadingButton(false);
     Swal.fire({
       icon: res.icon,
       title: res.title,
@@ -167,6 +171,7 @@ export default function CampaignCreateForm({
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setIsLoadingButton(true);
     const campaign = {
       ...values,
       initDate,
@@ -177,16 +182,23 @@ export default function CampaignCreateForm({
       isPost: Boolean(values.isPost),
       isVideo: Boolean(values.isVideo)
     }
+    const res = await store(auth.token, campaign);
+    setIsLoadingButton(false);
 
-    const res = await store(auth.token, campaign)
-    
-    console.log(res)
-
+    // catch req err
     Swal.fire({
       icon: res.data.icon,
       title: res.data.title,
+      text: 'Crear proyección a la nueva campaña',
       background: `rgba(210,210,210,1)`,
-      backdrop: `rgba(0,0,0,0)`
+      backdrop: `rgba(0,0,0,0)`,
+      confirmButtonText: 'Confirmar',
+      showDenyButton: true,
+      denyButtonText: 'Cancelar'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        window.location.href = `/dashboard/createProjection/${res.data.id}`    
+      }
     })
 
     handleCleanValues() 
@@ -516,15 +528,26 @@ export default function CampaignCreateForm({
           </Stack> 
 
           {updateMode &&
-            <Button variant="contained" color="primary" onClick={handleUpdate}>
+            <LoadingButton 
+              variant="contained" 
+              color="primary"
+              loading={isLoadingButton} 
+              onClick={handleUpdate}
+            >
               Actualizar Campaña
-            </Button>
+            </LoadingButton>
           }
 
           {createMode &&
-            <Button variant="contained" color="primary" onClick={handleSubmit}>
+            <LoadingButton 
+              variant="contained" 
+              color="primary"
+              loading={isLoadingButton} 
+              onClick={handleSubmit}
+            >
               Registrar Campaña
-            </Button>
+            </LoadingButton>
+            
           }
 
         </Stack>

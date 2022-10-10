@@ -2,7 +2,21 @@ import { useState, useContext, useEffect } from 'react';
 import { faker } from '@faker-js/faker';
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Grid, Container, Typography, Card, CardHeader, Skeleton } from '@mui/material';
+import { 
+  Grid, 
+  Container, 
+  Typography, 
+  Card, 
+  CardHeader, 
+  Skeleton, 
+  CardContent,
+  Divider,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  ListItemButton
+} from '@mui/material';
 import {
   ScatterChart,
   Scatter,
@@ -101,7 +115,7 @@ export default function DashboardApp() {
             <AppWidgetSummary
               title="Total de Campañas"
               total={stads.total}
-              icon={'ant-design:android-filled'}
+              icon={'material-symbols:shopping-bag-outline'}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
@@ -109,7 +123,7 @@ export default function DashboardApp() {
               title="Campañas Activas"
               total={stads.on}
               color="info"
-              icon={'ant-design:apple-filled'}
+              icon={'material-symbols:play-arrow'}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
@@ -117,7 +131,7 @@ export default function DashboardApp() {
               title="Campañas Pausadas"
               total={stads.paused}
               color="warning"
-              icon={'ant-design:windows-filled'}
+              icon={'material-symbols:pause-outline'}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
@@ -125,7 +139,7 @@ export default function DashboardApp() {
               title="Campañas Finalizadas"
               total={stads.finalized}
               color="error"
-              icon={'ant-design:bug-filled'}
+              icon={'material-symbols:stop'}
             />
           </Grid>
         </Grid>
@@ -141,7 +155,7 @@ export default function DashboardApp() {
               />
               :
               <Card>
-                <CardHeader title={"Predicciones"} />
+                <CardHeader title={"Curva de predicción"} />
                 <Skeleton
                   variant="rectangular"
                   height={440}
@@ -157,7 +171,7 @@ export default function DashboardApp() {
               <CampaignPrediction />
               :
               <Card>
-                <CardHeader title={"Predicciones"} />
+                <CardHeader title={"Predicción One Hot"} />
                 <Skeleton
                   variant="rectangular"
                   height={440}
@@ -211,7 +225,7 @@ export default function DashboardApp() {
             }
           </Grid>
 
-          <Grid item xs={12} md={12} lg={8}>
+          <Grid item xs={12} md={12} lg={12}>
             {stads.ageAudienceTarget &&
               <AppCampaignAudienceAgeScatterPlot
                 data={stads.ageAudienceTarget}
@@ -219,6 +233,102 @@ export default function DashboardApp() {
             }
           </Grid>
 
+          <Grid item xs={12} md={12} lg={6}>
+            {stads.destinationArray
+              ?
+              <AppCampaignTypesBarChart
+                title={'Histograma destino de las campañas'}
+                subtitle={'Type'}
+                chartData={stads.destinationArray}
+              />
+              :
+              <Card>
+                <CardHeader title={"Histograma destino de las campañas"} />
+                <Skeleton
+                  variant="rectangular"
+                  height={350}
+                  sx={{ bgcolor: 'grey.400', m: 3 }}
+                />
+              </Card>
+            }
+          </Grid>
+
+          <Grid item xs={12} md={12} lg={6}>
+            {stads.ubication
+              ?
+              <Card>
+                <CardContent>
+                  <Typography variant="h6" sx={{ mb: 5 }}>
+                    Campañas activas por estado
+                  </Typography>
+                  <Divider />
+                  <List>
+                    {stads.ubication.map((el, i) =>
+                      <ListItem key={el._id}>
+                        <ListItemButton>
+                        <ListItemIcon>
+                          {i+1}
+                        </ListItemIcon>
+                          {el._id} - {el.count} campañas
+                        </ListItemButton>
+                      </ListItem>
+                      )
+                    }
+                  </List>
+                </CardContent>
+              </Card>
+              :
+              <Card>
+                <CardHeader title={"Campañas activas por estado"} />
+                <Skeleton
+                  variant="rectangular"
+                  height={420}
+                  sx={{ bgcolor: 'grey.400', m: 3 }}
+                />
+              </Card>
+              }
+          </Grid>
+{/*
+          <Grid item xs={12} md={12} lg={12}>
+            <AppWebsiteVisits
+              title="Campañas"
+              subheader="Prediccion de inversion por dia"
+              chartLabels={[
+                '01/01/2003',
+                '02/01/2003',
+                '03/01/2003',
+                '04/01/2003',
+                '05/01/2003',
+                '06/01/2003',
+                '07/01/2003',
+                '08/01/2003',
+                '09/01/2003',
+                '10/01/2003',
+                '11/01/2003',
+              ]}
+              chartData={[
+                {
+                  name: 'Team A',
+                  type: 'column',
+                  fill: 'solid',
+                  data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30],
+                }
+                {
+                  name: 'Team B',
+                  type: 'area',
+                  fill: 'gradient',
+                  data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43],
+                },
+                {
+                  name: 'Team C',
+                  type: 'line',
+                  fill: 'solid',
+                  data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43],
+                },
+              ]}
+            />
+          </Grid>
+ 
           <Grid item xs={12} md={6} lg={4}>
             {stads.genderAudience &&
               <AppCurrentVisits
@@ -253,7 +363,7 @@ export default function DashboardApp() {
             />
           </Grid>
 
-          <Grid item xs={12} md={6} lg={8}>
+          <Grid item xs={12} md={12} lg={12}>
             <AppWebsiteVisits
               title="Website Visits"
               subheader="(+43%) than last year"
@@ -293,45 +403,7 @@ export default function DashboardApp() {
             />
           </Grid>
 
-          <Grid item xs={12} md={6} lg={8}>
-            <AppWebsiteVisits
-              title="Campañas"
-              subheader="Prediccion de inversion por dia"
-              chartLabels={[
-                '01/01/2003',
-                '02/01/2003',
-                '03/01/2003',
-                '04/01/2003',
-                '05/01/2003',
-                '06/01/2003',
-                '07/01/2003',
-                '08/01/2003',
-                '09/01/2003',
-                '10/01/2003',
-                '11/01/2003',
-              ]}
-              chartData={[
-                /* {
-                  name: 'Team A',
-                  type: 'column',
-                  fill: 'solid',
-                  data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30],
-                }
-                {
-                  name: 'Team B',
-                  type: 'area',
-                  fill: 'gradient',
-                  data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43],
-                }, */
-                {
-                  name: 'Team C',
-                  type: 'line',
-                  fill: 'solid',
-                  data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43],
-                },
-              ]}
-            />
-          </Grid>
+          
 
           <Grid item xs={12} md={6} lg={4}>
             <AppCurrentVisits
@@ -454,7 +526,7 @@ export default function DashboardApp() {
               ]}
             />
           </Grid>
-
+*/}
         </Grid>
 
       </Container>

@@ -170,7 +170,7 @@ const handleRequestSort = (event, property) => {
     Swal.fire({
       background: `rgba(210,210,210,1)`,
       backdrop: `rgba(0,0,0,0)`,
-      title: 'Ingrese el pago en dolares ($) ejemplo: -100',
+      title: 'Ingrese el pago en dólares ($) ejemplo: -100',
       input: 'text',
       inputAttributes: {
         autocapitalize: 'off'
@@ -258,7 +258,7 @@ const handleRequestSort = (event, property) => {
               <Typography variant="h5" sx={{ ml:2 }}>
                 Balance de pagos 
               </Typography>
-              <Button variant="outlined" size='small'
+              <Button variant="contained" color='success' size='small'
                 startIcon={<Iconify icon="eva:plus-fill" />}
                 onClick={handleAddBalance}
                 sx={{ ml:2 }}

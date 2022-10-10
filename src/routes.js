@@ -17,8 +17,9 @@ import EditUser from './pages/EditUser';
 import EditClient from './pages/EditClient';
 import EditCampaign from './pages/EditCampaign';
 import ClientCampaigns from './pages/ClientCampaigns';
-import Projection from './pages/Projection';
+import CreateProjection from './pages/CreateProjection';
 import ClientStadistic from './pages/ClientStadistic';
+import ClientProjection from './pages/ClientProjection';
 import Report from './pages/Report';
 //
 import RequireAuth from './context/RequireAuth';
@@ -42,11 +43,15 @@ export default function Router() {
         },
         {
           path: 'stadistic',
-          children: [{ path: ':id', element: <ClientStadistic />}]
+          children: [{ path: ':id', element: <ClientProjection />}]
         },
         {
           path: 'projection',
-          children: [{ path: ':id', element: <Projection />}]
+          children: [{ path: ':id', element: <ClientProjection />}]
+        },
+        {
+          path: 'createProjection',
+          children: [{ path: ':id', element: <CreateProjection />}]
         },
         {
           path: 'induction', element: 'epa',

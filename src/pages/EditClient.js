@@ -5,8 +5,10 @@ import { styled } from '@mui/material/styles';
 import {
   Container,
   Typography,
-  Stack
+  Stack,
+  Button
 } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
 // components
 import Page from '../components/Page';
 // sections
@@ -61,6 +63,10 @@ export default function EditClient({
               <Typography variant="h4" gutterBottom>
                 {title} Cliente
               </Typography>
+              <Button
+                variant="contained" size="small"
+                component={RouterLink} to={`/dashboard/client`}
+              >Regresar</Button>
             </Stack>
             <ClientForm
               client={client}

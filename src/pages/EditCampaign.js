@@ -66,10 +66,8 @@ export default function EditCampaign({
   }
 
   const _deleteCampaign = async (id) => {
-    
     Swal.fire({
       title: '¿Desea eliminar esta campaña?',
-      text: 'Eliminar campaña',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -116,13 +114,23 @@ export default function EditCampaign({
 
                 {projection !== null &&
                   <Button
-                    variant="outlined" size="small"
-                    onClick={() => setShowProjectionView(true)}
+                    variant="contained" size="small"
+                    component={RouterLink} to={`/dashboard/projection/${campaign._id}`}
                   >Proyección</Button>
                 }
 
-                <Button onClick={() => setUpdateMode(!updateMode)} color='success' variant="outlined" size="small">Editar</Button>
-                <Button onClick={() => handleDeleteCampaign(campaign._id)} color='error' variant="outlined" size="small">Eliminar</Button>
+                <Button onClick={() => setUpdateMode(!updateMode)} 
+                  color='success' 
+                  variant="contained" 
+                  size="small">
+                Editar</Button>
+                <Button onClick={() => handleDeleteCampaign(campaign._id)} 
+                  color='error' 
+                  variant="contained" 
+                  size="small"
+                >
+                  Eliminar
+                </Button>
               </Stack>
 
               
@@ -138,7 +146,9 @@ export default function EditCampaign({
                     ¡Esta campaña no está asignada a un cliente!
                   </Typography>
 
-                  <Button component={RouterLink} to={`/dashboard/projection/${campaign._id}`}
+                  <Button 
+                    component={RouterLink} 
+                    to={`/dashboard/createProjection/${campaign._id}`}
                     variant="outlined" size="small">Crear Proyección</Button>
 
                 </Box>

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useFormik, Form, FormikProvider } from 'formik';
 import * as Yup from 'yup';
 // material
@@ -12,6 +12,7 @@ import {
   Select,
   MenuItem
 } from '@mui/material';
+import { LoadingButton } from '@mui/lab'
 // sweetalert2
 import Swal from 'sweetalert2';
 import Iconify from '../../../components/Iconify';
@@ -29,6 +30,8 @@ ProjectionCreateForm.propTypes = {
 
 export default function ProjectionCreateForm({ campaign, clients }) {
   const auth = useContext(AppContext);
+
+  const [isLoadingButton, setIsLoadingButton] = useState(false)
 
   const ProjectionCreateFormSchema = Yup.object().shape({
     campaignId: Yup.string()
@@ -61,14 +64,16 @@ export default function ProjectionCreateForm({ campaign, clients }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setIsLoadingButton(true)
     await createProjection(auth.token, values)
+    setIsLoadingButton(false)
     Swal.fire({
       icon: "success",
       title: "Proyección creada con éxito",
       background: `rgba(210,210,210,1)`,
       backdrop: `rgba(0,0,0,0)`
     })
-    window.location.href = `/dashboard/campaign/${values.campaignId}`
+    window.location.href = `/dashboard/projection/${values.campaignId}`
   }
 
   useEffect(() => {
@@ -135,15 +140,16 @@ export default function ProjectionCreateForm({ campaign, clients }) {
               )}
             </Select>
           </FormControl>
-          <Button 
-              variant="outlined" 
-              size="small"
-              type="submit"
-              startIcon={<Iconify icon="eva:plus-fill" />}
-              sx={{ mt:2 }}
-            >
-              Crear Proyección
-          </Button>
+
+          <LoadingButton 
+            variant="contained" 
+            color="primary"
+            loading={isLoadingButton} 
+            onClick={handleSubmit}
+          >
+            Crear Proyección
+          </LoadingButton>
+
         </Stack>
       </Form>
     </FormikProvider>

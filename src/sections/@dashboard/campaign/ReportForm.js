@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { useContext, useEffect, useState } from 'react';
 import { useFormik, Form, FormikProvider } from 'formik';
-
+import { useParams, Link as RouterLink } from 'react-router-dom';
 import * as Yup from 'yup';
 // material
 import {
@@ -14,6 +14,7 @@ import {
   List,
   Typography
 } from '@mui/material';
+import { LoadingButton } from '@mui/lab' 
 // sweetalert2
 import Swal from 'sweetalert2';
 import Iconify from '../../../components/Iconify';
@@ -30,7 +31,7 @@ ReportForm.propTypes = {
 
 export default function ReportForm({ campaign, projection }) {
   const auth = useContext(AppContext);
-
+  const [isLoadingButton, setIsLoadingButton] = useState(false)
   const ReportFormSchema = Yup.object().shape({
     campaignId: Yup.string()
       .required('El campaignId es requerido'),
@@ -69,14 +70,25 @@ export default function ReportForm({ campaign, projection }) {
   }
 
   const handleSubmit = async () => {
+    setIsLoadingButton(true)
     const { data } = await sendReport(auth.token, values)
+    setIsLoadingButton(false)
     Swal.fire({
       icon: 'success',
       title: 'Reporte enviado con éxito',
       background: `rgba(210,210,210,1)`,
       backdrop: `rgba(0,0,0,0)`,
+      confirmButtonText: 'Regresar a campaña',
+      showDenyButton: true,
+      denyButtonText: 'Cancelar',
       footer:`<a href=${data.url} target="_blank" style="text-decoration: none">Ver reporte en EtherEmail</a>`
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = `/dashboard/campaign/${values.campaignId}`
+      }
+      
     })
+    // window.location.href = `/dashboard/campaign/${values.campaignId}`
   }
 
   useEffect(() => {
@@ -211,8 +223,7 @@ export default function ReportForm({ campaign, projection }) {
             helperText={touched.campaignId && errors.campaignId}
             onChange={handleChange}
           />
-          <Button onClick={handleSubmit}>Enviar Reporte</Button>
-
+          <LoadingButton variant="contained" loading={isLoadingButton} onClick={handleSubmit}>Enviar Reporte</LoadingButton>
         </Stack>
       </Form>
     </FormikProvider>

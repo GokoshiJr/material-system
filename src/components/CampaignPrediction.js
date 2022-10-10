@@ -3,8 +3,10 @@ import { useFormik, Form, FormikProvider } from 'formik';
 import * as Yup from 'yup';
 // material
 import { Stack, TextField, Button, Card, CardHeader, Box } from '@mui/material';
+import { LoadingButton } from '@mui/lab'
 // sweetalert2
 import Swal from 'sweetalert2';
+import { round } from 'mathjs'
 // context
 import { AppContext } from '../context/AppContext';
 // api method
@@ -17,6 +19,7 @@ CampaignPrediction.propTypes = {};
 export default function CampaignPrediction() {
   const auth = useContext(AppContext);
   const [predP, setPred] = useState(0)
+  const [isLoadingButton, setIsLoadingButton] = useState(false)
   const PredictFormSchema = Yup.object().shape({
     duration: Yup.number()
       .min(7, 'Minimo 7 dias')
@@ -53,13 +56,15 @@ export default function CampaignPrediction() {
 
   const oneHotPred = async () => {
     // console.log(values.duration)
+    setIsLoadingButton(true)
     const { res } = await oneHotPrediction(auth.token, values.duration);
+    setIsLoadingButton(false)
     // setPred(res)
     // console.log(res.data.pred[0].prediction)
 
     setValues({
         duration: values.duration,
-        pay: res.data.pred[0].prediction
+        pay: round(res.data.pred[0].prediction, 2)
     })
   }
 
@@ -67,7 +72,7 @@ export default function CampaignPrediction() {
     event.preventDefault();
     const errorsCount = Object.keys(errors)
     if (errorsCount.length === 0) {
-      console.log('create employee')
+      
       await oneHotPred()
       // Swal.fire({
       //   icon: 'success',
@@ -88,8 +93,8 @@ export default function CampaignPrediction() {
   return (    
     <Card sx={{ mb: 0 }}>
       <CardHeader
-        title={'Prediccion One Hot'}
-        subheader={'Ingrese la duracion de la campaña para estimar la inversion por dia'}
+        title={'Predicción One Hot'}
+        subheader={'Ingrese la duración de la campaña para estimar la inversión por día'}
       />
       
       <Box sx={{ p: 3, pb: 1, mb: 3 }} dir="ltr">
@@ -100,7 +105,7 @@ export default function CampaignPrediction() {
                 <TextField
                   fullWidth
                   name='duration'
-                  label='Duracion de la campaña'
+                  label='Duración de la campaña'
                   {...getFieldProps('duration')}
                   error={Boolean(touched.duration && errors.duration)}
                   helperText={touched.duration && errors.duration}
@@ -109,7 +114,7 @@ export default function CampaignPrediction() {
                 <TextField
                   fullWidth
                   name='pay'
-                  label='Pago por dia'
+                  label='Pago por día'
                   {...getFieldProps('pay')}
                   error={Boolean(touched.pay && errors.pay)}
                   helperText={touched.pay && errors.pay}
@@ -121,9 +126,14 @@ export default function CampaignPrediction() {
                 <Button variant="contained" color="error" onClick={handleCleanValues}>
                   Limpiar
                 </Button>
-                <Button variant="contained" type="submit">
+                <LoadingButton 
+                  variant="contained" 
+                  color="primary"
+                  loading={isLoadingButton} 
+                  onClick={handleSubmit}
+                >
                   Calcular
-                </Button>
+                </LoadingButton>
               </Stack>
             </Stack>
           </Form>
