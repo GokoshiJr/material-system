@@ -66,23 +66,21 @@ export default function EditCampaign() {
     clientId: ''
   })
   
-
+const [projection2, setProjection2] = useState({
+    link: '',
+    balances: [0],
+    campaignId: '',
+    clientId: ''
+  })
   const showClientInCampaign = async () => {
     // retorna la campaña por su id
+    setIsLoading(true)
     const { data } = await clientInCampaign(auth.token, id);
-    
     setProjection(data);
     setIsLoading(false)
-    console.log(projection)
   }
 
   useEffect(() => {
-    // setProjection({
-    //   link: 'Cargando...',
-    //   balances: [0],
-    //   campaignId: 'Cargando...',
-    //   clientId: 'Cargando...'
-    // })
     showClientInCampaign();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -92,6 +90,7 @@ export default function EditCampaign() {
       <RootStyle>
         <Container>
           <ContentStyle>
+          
           {!isLoading &&
             <>
             <Stack
@@ -128,7 +127,6 @@ export default function EditCampaign() {
             />
             </>
           }
-            
           </ContentStyle>
         </Container>
       </RootStyle>

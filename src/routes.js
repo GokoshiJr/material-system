@@ -43,7 +43,7 @@ export default function Router() {
         },
         {
           path: 'stadistic',
-          children: [{ path: ':id', element: <ClientProjection />}]
+          children: [{ path: ':id', element: <ClientStadistic />}]
         },
         {
           path: 'projection',

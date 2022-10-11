@@ -203,20 +203,7 @@ const handleRequestSort = (event, property) => {
   }
 
   useEffect(() => {
-    console.log(projection)
     if (projection) handleResetValues();
-    // if (!client) {
-    //   setValues({
-    //     name: '',
-    //     lastName: '',
-    //     email: '',
-    //     phoneNumber: '',
-    //     userAccount: '',
-    //     password: '',
-    //     socialPlatform: '',
-    //     associated: true
-    //   })
-    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projection])
 
