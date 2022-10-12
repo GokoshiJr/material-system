@@ -107,6 +107,7 @@ export default function Campaign() {
   const _getCampaignUnasigned = async () => {
     setIsLoading(true)
     const { data } = await getCampaignUnasigned(auth.token)
+    console.log(await getCampaignUnasigned(auth.token))
     setCampaignSelectedArray(data)
     setIsLoading(false)
   }

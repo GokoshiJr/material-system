@@ -60,6 +60,8 @@ export default function LoginForm() {
     .then(({data}) => {
       localStorage.setItem("token", data.token);
       Auth.setToken(data.token)
+      Auth.setLoggedUser(null)
+      Auth.setLoggedEmployee(null)
       navigate('/dashboard/app', { replace: true });
     })
     .catch((err) => {

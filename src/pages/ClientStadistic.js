@@ -275,7 +275,7 @@ export default function ClientStadistic() {
                   name: el.label,
                   value: el.value,
                   icon: <Iconify icon={
-                    'eva:facebook-fill'
+                    'material-symbols:shopping-cart-outline'
                     
                   } color="#1877F2" width={32} height={32} />,
                 }))

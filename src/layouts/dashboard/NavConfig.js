@@ -10,26 +10,31 @@ const navConfig = [
     title: 'Mi Perfil',
     path: '/dashboard/profile',
     icon: getIcon('eva:options-2-fill'),
+    admin: false
   },
   {
     title: 'Dashboard',
     path: '/dashboard/app',
     icon: getIcon('eva:pie-chart-2-fill'),
+    admin: false
   },
   {
     title: 'Empleados',
     path: '/dashboard/user',
     icon: getIcon('eva:people-fill'),
+    admin: true
   },
   {
     title: 'Clientes',
     path: '/dashboard/client',
     icon: getIcon('material-symbols:database'),
+    admin: false
   },
   {
     title: 'Campañas',
     path: '/dashboard/campaign',
     icon: getIcon('material-symbols:shopping-bag-outline'),
+    admin: false
   },
   // {
   //   title: 'product',

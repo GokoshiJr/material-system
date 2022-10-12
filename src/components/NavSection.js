@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { NavLink as RouterLink, matchPath, useLocation } from 'react-router-dom';
 // material
@@ -6,7 +6,7 @@ import { alpha, useTheme, styled } from '@mui/material/styles';
 import { Box, List, Collapse, ListItemText, ListItemIcon, ListItemButton } from '@mui/material';
 //
 import Iconify from './Iconify';
-
+import { AppContext } from '../context/AppContext'
 // ----------------------------------------------------------------------
 
 const ListItemStyle = styled((props) => <ListItemButton disableGutters {...props} />)(({ theme }) => ({
@@ -36,9 +36,9 @@ NavItem.propTypes = {
 
 function NavItem({ item, active }) {
   const theme = useTheme();
-
+  const auth = useContext(AppContext)
   const isActiveRoot = active(item.path);
-
+  const [isUser, setIsUser] = useState(false)
   const { title, path, icon, info, children } = item;
 
   const [open, setOpen] = useState(isActiveRoot);
@@ -121,6 +121,7 @@ function NavItem({ item, active }) {
   }
 
   return (
+    
     <ListItemStyle
       component={RouterLink}
       to={path}
@@ -128,10 +129,15 @@ function NavItem({ item, active }) {
         ...(isActiveRoot && activeRootStyle),
       }}
     >
+      {
+
+      }
       <ListItemIconStyle>{icon && icon}</ListItemIconStyle>
       <ListItemText disableTypography primary={title} />
       {info && info}
     </ListItemStyle>
+    
+    
   );
 }
 
@@ -141,16 +147,45 @@ NavSection.propTypes = {
 
 export default function NavSection({ navConfig, ...other }) {
   const { pathname } = useLocation();
-
+  const auth = useContext(AppContext)
   const match = (path) => (path ? !!matchPath({ path, end: false }, pathname) : false);
+  const [isAdmin, setAdmin] = useState(false)
 
+  useEffect(() => {
+    if (auth.loggedUser) {
+      if (auth.loggedUser.roles[0].name === "admin") {
+        setAdmin(true)
+      }
+    }
+  }, [auth])
+  
+  
   return (
+  
     <Box {...other}>
+    
       <List disablePadding sx={{ p: 1 }}>
         {navConfig.map((item) => (
-          <NavItem key={item.title} item={item} active={match} />
+          <Box key={item.title}>
+          {isAdmin
+            ?
+              <NavItem key={item.title} item={item} active={match} />
+            :
+            <>
+              {item.admin === false &&
+                <NavItem key={item.title} item={item} active={match} />
+              }
+            </>
+          }
+          </Box>
+          
         ))}
       </List>
+    
+      
     </Box>
+    
+  
+    
   );
 }
