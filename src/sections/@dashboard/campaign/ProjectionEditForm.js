@@ -227,7 +227,7 @@ const handleRequestSort = (event, property) => {
           <TextField
             fullWidth
             name='link'
-            label='API Link'
+            label='Link'
             {...getFieldProps('link')}
             inputProps={{readOnly: true}}
             error={Boolean(touched.link && errors.link)}

@@ -99,7 +99,12 @@ export default function ProfileForm({
       background: `rgba(210,210,210,1)`,
       backdrop: `rgba(0,0,0,0)`
     })
-    window.location.href = '/dashboard/user';
+    .then(async (result) => {
+      if (result.isConfirmed) {
+        window.location.href = `/dashboard/user`    
+      }
+    })
+    
   }
 
   const handleResetValues = () => {
@@ -148,6 +153,10 @@ export default function ProfileForm({
         title: res.title,
         background: `rgba(210,210,210,1)`,
         backdrop: `rgba(0,0,0,0)`
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          window.location.href = `/dashboard/user`    
+        }
       })
       handleCleanValues()
     }

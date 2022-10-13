@@ -197,7 +197,9 @@ export default function CampaignCreateForm({
       denyButtonText: 'Cancelar'
     }).then(async (result) => {
       if (result.isConfirmed) {
-        window.location.href = `/dashboard/createProjection/${res.data.id}`    
+        window.location.href = `/dashboard/createProjection/${res.data.id}`
+      } else {
+        window.location.href = `/dashboard/campaign`
       }
     })
 

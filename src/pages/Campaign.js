@@ -201,7 +201,18 @@ export default function Campaign() {
           </Stack>
           {!isLoading
             ?
-            <CampaignList campaigns={campaignSelectedArray} />
+            <>
+              {campaignSelectedArray.length > 0
+                ?
+                <CampaignList campaigns={campaignSelectedArray} />
+                :
+                <Stack direction="row" alignItems="center" justifyContent="center" sx={{ mt:14 }}>
+                  <Typography variant="h3" gutterBottom>
+                    Sin campañas...
+                  </Typography>
+                </Stack>
+              }
+            </>
             :
             <Grid container spacing={3}>
               {[0,1,2,3].map((el, index) => (

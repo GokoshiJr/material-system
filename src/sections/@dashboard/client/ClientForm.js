@@ -78,12 +78,15 @@ export default function ClientForm({
     const res = await updateClient(auth.token, id, values);
     // actualiza el empleado del state
     showEmp()
-    console.log(res.title)
     Swal.fire({
       icon: res.icon,
       title: res.title,
       background: `rgba(210,210,210,1)`,
       backdrop: `rgba(0,0,0,0)`
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        window.location.href = `/dashboard/client`    
+      }
     })
   }
 
@@ -131,6 +134,10 @@ export default function ClientForm({
         title: res.title,
         background: `rgba(210,210,210,1)`,
         backdrop: `rgba(0,0,0,0)`
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          window.location.href = `/dashboard/client`    
+        }
       })
       handleCleanValues()
     }

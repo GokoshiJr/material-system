@@ -87,7 +87,19 @@ export default function ClientCampaigns() {
         </Stack>
         {!isLoading
           ?
-          <CampaignList campaigns={campaigns} />
+          <>
+          
+          {campaigns.length > 0
+                ?
+                <CampaignList campaigns={campaigns} />
+                :
+                <Stack direction="row" alignItems="center" justifyContent="center" sx={{ mt:14 }}>
+                  <Typography variant="h3" gutterBottom>
+                    Sin campañas...
+                  </Typography>
+                </Stack>
+              }
+          </>   
           :
           <Grid container spacing={3}>
             {[0,1,2,3].map((el, index) => (
